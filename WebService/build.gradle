@@ -37,7 +37,6 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-autoconfigure'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
     compile 'org.springframework.boot:spring-boot-starter-security'
-    compile 'org.springframework.boot:spring-boot-starter-mail'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'net.sf.json-lib:json-lib:2.4:jdk15'
     compile 'com.amazonaws:aws-java-sdk-s3:1.10.66'

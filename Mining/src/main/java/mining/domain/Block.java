@@ -1,4 +1,4 @@
-package master.domains;
+package mining.domain;
 
 public class Block {
 }
