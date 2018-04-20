@@ -1,0 +1,7 @@
+rootProject.name = 'ChainStore'
+include 'Core'
+include 'WebService'
+include 'Master'
+include 'Mining'
+include 'Database'
+
