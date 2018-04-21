@@ -45,7 +45,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'master.MainApplication'
+        attributes 'Main-Class': 'master.Master'
     }
     into('lib') {
         from configurations.runtime

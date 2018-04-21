@@ -4,7 +4,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import mining.model.Parameter;
+import mining.model.TestParameters;
 import mining.response.MineCompleteResponse;
+import mining.response.RegisterResponse;
 import mining.response.Response;
 import mining.response.WrongResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
 
 @RestController
@@ -22,10 +23,28 @@ public class MinerController {
     @Value("${master.address}")
     private String masterAddress;
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public void setDataToMaster() {
+    private static String masterToken = ""; //判断请求是否由主机发出
+    private static String accessToken = "";
+
+    @ApiOperation(value = "挖矿向主机注册", notes = "矿机启动后应该向主机注册")
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
+    public String register() {
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getForEntity(masterAddress + "/test", void.class);
+        ResponseEntity<RegisterResponse> entity = restTemplate.getForEntity(masterAddress + "/register/MINER", RegisterResponse.class);
+        masterToken = entity.getBody().getMasterToken();
+        accessToken = entity.getBody().getAccessToken();
+        return String.format("Register complete. Got masterToken: %s, accessToken: %s", masterAddress, accessToken);
+
+    }
+
+    @ApiOperation(value = "挖矿向主机发起请求", notes = "挖矿向主机发起请求")
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test() {
+        System.out.println(accessToken);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> entity = restTemplate.postForEntity(masterAddress + "/test", new TestParameters(accessToken), String.class);
+        return entity.getBody();
+
     }
 
     @ApiOperation(value = "挖矿", notes = "挖矿")
@@ -35,14 +54,11 @@ public class MinerController {
         @ApiResponse(code = 403, message = "Not master"),
     })
     @ResponseBody
-    public ResponseEntity<Response> getInstanceInformation(@RequestBody Parameter parameter, HttpServletRequest request) {
+    public ResponseEntity<Response> getInstanceInformation(@RequestBody Parameter parameter) {
 
-        if (!request.getRemoteAddr().equals(masterAddress)) {
+        if (parameter.getMasterToken() == null || !parameter.getMasterToken().equals(masterToken)) { // 判断master token是否合法
             return new ResponseEntity<>(new WrongResponse(403, ""), HttpStatus.FORBIDDEN);
         }
-
-        System.out.println(request.getRemoteHost());
-        System.out.println(masterAddress);
 
         String hash = "";
         long timestamp = System.currentTimeMillis();

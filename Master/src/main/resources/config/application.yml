@@ -8,3 +8,5 @@ logging:
 
 miner:
   address: ""
+
+masterToken: "23tj9j23tg223it2VFGED"
