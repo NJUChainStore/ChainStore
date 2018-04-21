@@ -16,7 +16,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-@EnableAutoConfiguration(exclude = {JacksonAutoConfiguration.class})
 public class MainApplication {
 
     public static void main(String[] args) {

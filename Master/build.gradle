@@ -30,17 +30,11 @@ repositories {
 
 dependencies {
     compile 'org.springframework:spring-core'
-    compile('org.springframework.boot:spring-boot-starter-web') {
-        exclude module: 'com.fasterxml.jackson.core:jackson-databind'
-    }
+    compile('org.springframework.boot:spring-boot-starter-web')
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
-    compile 'org.springframework.boot:spring-boot-starter-security'
-    compile 'com.google.code.gson:gson:2.8.2'
     compile 'net.sf.json-lib:json-lib:2.4:jdk15'
-    compile 'com.amazonaws:aws-java-sdk-s3:1.10.66'
-    compile 'io.jsonwebtoken:jjwt:0.6.0'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.4.0'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.4.0'
     compile group: 'io.springfox', name: 'springfox-spi', version: '2.4.0'
@@ -51,7 +45,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'trapx00.tagx00.MainApplication'
+        attributes 'Main-Class': 'master.MainApplication'
     }
     into('lib') {
         from configurations.runtime
