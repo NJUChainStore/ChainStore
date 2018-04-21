@@ -5,36 +5,6 @@ logging:
     org.springframework:
       data: DEBUG
       security: DEBUG
-jwt:
-  claimKey:
-    username: "username"
-    authorities: "authorities"
-  secret: "wfhg9hr-1jfpjf-p3j-=vgf0pvmo3k=2-3rj0-3j=gn[=3-g[mj"
-  header: Authorization
-  tokenHead: "Bearer "
-oos:
-  accessKey: "c4582dec5d0809103126"
-  secretKey: "47c783687d4c452c5d71b817b8c481915fb0094a"
-  endPoint: "http://oos-bj2.ctyunapi.cn"
-  bucketName: "tagx00"
-email:
-  sender: "m18851822162@163.com"
-  subject: "Tagx00账号注册邮箱认证"
-  content1: "亲爱的用户： 您好!<br/>
-            您正在注册Tagx00账号，请在验证码输入框中输入："
-  content2: "<br/>以完成注册。"
-spring:
-  aop:
-    auto: true
-    proxy-target-class: false
-  mail:
-    host: smtp.163.com
-    username: m18851822162@163.com
-    password: 999959
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
+
+miner:
+  address: ""

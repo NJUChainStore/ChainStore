@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.MessageDigest;
@@ -21,6 +22,11 @@ public class MinerController {
     @Value("${master.address}")
     private String masterAddress;
 
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public void setDataToMaster() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getForEntity(masterAddress + "/test", void.class);
+    }
 
     @ApiOperation(value = "挖矿", notes = "挖矿")
     @RequestMapping(value = "/mine", method = RequestMethod.POST)
@@ -84,5 +90,6 @@ public class MinerController {
             throw new RuntimeException(e);
         }
     }
+
 
 }
