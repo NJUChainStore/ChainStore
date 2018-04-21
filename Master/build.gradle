@@ -34,7 +34,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-aop'
     compile 'org.springframework.boot:spring-boot-autoconfigure'
     compile 'org.springframework.boot:spring-boot-starter-tomcat'
-    compile 'net.sf.json-lib:json-lib:2.4:jdk15'
+
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.4.0'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.4.0'
     compile group: 'io.springfox', name: 'springfox-spi', version: '2.4.0'
