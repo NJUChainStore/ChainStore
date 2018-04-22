@@ -1,17 +1,10 @@
-package master.model;
+package master.global.entity;
 
-public class DatabaseItem {
+public class MinerItem {
     private long registerTimestamp;
-    private String masterToken;
     private String accessToken;
-    private DatabaseState state;
+    private String masterToken;
 
-    public DatabaseItem(long registerTimestamp, String masterToken, String accessToken, DatabaseState state) {
-        this.registerTimestamp = registerTimestamp;
-        this.masterToken = masterToken;
-        this.accessToken = accessToken;
-        this.state = state;
-    }
 
     public long getRegisterTimestamp() {
         return registerTimestamp;
@@ -37,11 +30,9 @@ public class DatabaseItem {
         this.accessToken = accessToken;
     }
 
-    public DatabaseState getState() {
-        return state;
-    }
-
-    public void setState(DatabaseState state) {
-        this.state = state;
+    public MinerItem(long registerTimestamp, String accessToken, String masterToken) {
+        this.registerTimestamp = registerTimestamp;
+        this.accessToken = accessToken;
+        this.masterToken = masterToken;
     }
 }

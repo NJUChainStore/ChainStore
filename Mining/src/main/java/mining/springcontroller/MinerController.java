@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import static mining.token.TokenManager.*;
 
 import java.security.MessageDigest;
 
@@ -23,8 +24,7 @@ public class MinerController {
     @Value("${master.address}")
     private String masterAddress;
 
-    private static String masterToken = ""; //判断请求是否由主机发出
-    private static String accessToken = "";
+
 
     @ApiOperation(value = "挖矿向主机注册", notes = "矿机启动后应该向主机注册")
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -42,7 +42,7 @@ public class MinerController {
     public String test() {
         System.out.println(accessToken);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> entity = restTemplate.postForEntity(masterAddress + "/test", new TestParameters(accessToken), String.class);
+        ResponseEntity<String> entity = restTemplate.getForEntity(masterAddress + "/test", String.class);
         return entity.getBody();
 
     }
@@ -55,10 +55,6 @@ public class MinerController {
     })
     @ResponseBody
     public ResponseEntity<Response> getInstanceInformation(@RequestBody Parameter parameter) {
-
-        if (parameter.getMasterToken() == null || !parameter.getMasterToken().equals(masterToken)) { // 判断master token是否合法
-            return new ResponseEntity<>(new WrongResponse(403, ""), HttpStatus.FORBIDDEN);
-        }
 
         String hash = "";
         long timestamp = System.currentTimeMillis();

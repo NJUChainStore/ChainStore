@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import master.blservice.MasterBlService;
+import master.global.entity.*;
 import master.model.*;
 import master.response.ReceiveCompleteReceivedResponse;
 import master.response.RegisterResponse;
@@ -31,9 +32,10 @@ public class MasterController {
         this.masterBlService = masterBlService;
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
     @ResponseBody
-    public String test(@RequestBody TestParameters parameters) {
+    public String test() {
+
         System.out.println("Incoming access token: " + parameters.getAccessToken());
         if (table.getMiner() != null && table.getMiner().getAccessToken().equals(parameters.getAccessToken())) {
             System.out.println("Incoming miner request");

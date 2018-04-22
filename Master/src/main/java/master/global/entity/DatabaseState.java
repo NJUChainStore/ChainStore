@@ -1,4 +1,4 @@
-package master.model;
+package master.global.entity;
 
 public enum DatabaseState {
     Available,

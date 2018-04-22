@@ -4,15 +4,7 @@ public class Parameter {
     private String previousHash;
     private int difficulty;
     private String base64Data;
-    private String masterToken;
 
-    public String getMasterToken() {
-        return masterToken;
-    }
-
-    public void setMasterToken(String masterToken) {
-        this.masterToken = masterToken;
-    }
 
     public Parameter() {
     }
