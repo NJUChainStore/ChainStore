@@ -5,7 +5,8 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import master.blservice.MasterBlService;
 import master.global.entity.*;
-import master.model.*;
+import master.model.ReceiveCompleteParameters;
+import master.model.SendCompleteParameters;
 import master.response.ReceiveCompleteReceivedResponse;
 import master.response.RegisterResponse;
 import master.response.Response;
@@ -15,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 import java.util.UUID;
 
 // 主机需要开一个定时线程
@@ -35,25 +35,7 @@ public class MasterController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     @ResponseBody
     public String test() {
-
-        System.out.println("Incoming access token: " + parameters.getAccessToken());
-        if (table.getMiner() != null && table.getMiner().getAccessToken().equals(parameters.getAccessToken())) {
-            System.out.println("Incoming miner request");
-            return "miner request";
-        }
-
-        Optional<DatabaseItem> databaseItem = table.getDatabases().stream()
-                .filter(x -> x.getAccessToken().equals(parameters.getAccessToken()))
-                .findFirst();
-
-        if (databaseItem.isPresent()) {
-            System.out.println("Incoming database request. ");
-            return "database request";
-        } else {
-            System.out.println("Invalid access token");
-            return "invalid";
-        }
-
+        return "123";
     }
 
     @ApiOperation(value = "注册机器", notes = "注册存储机或者挖坑机")
