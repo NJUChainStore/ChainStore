@@ -1,17 +1,12 @@
 package database.data.daoimpl.user;
 
-import fintech100k.WebService.entity.account.Role;
-import fintech100k.WebService.entity.account.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import trapx00.tagx00.data.dao.user.UserDao;
-import trapx00.tagx00.data.fileservice.FileService;
 
-import java.util.ArrayList;
+import database.data.dao.user.UserDao;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserDaoImpl implements UserDao {
-
+/*
     private final FileService<User> fileService;
 
     @Autowired
@@ -43,5 +38,6 @@ public class UserDaoImpl implements UserDao {
     public void delete(String username) {
         fileService.delete(username, User.class);
     }
+    */
 }
 

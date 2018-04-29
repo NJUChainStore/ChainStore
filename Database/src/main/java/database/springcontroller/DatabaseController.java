@@ -1,18 +1,28 @@
 package database.springcontroller;
 
+import database.data.dao.user.BlockDao;
+import database.data.daoimpl.user.BlockDaoImpl;
 import database.model.Block;
+import database.model.Cache;
 import database.model.DataReceivedResponse;
 import database.model.ReceiveStartInfo;
 import database.response.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @RestController
 public class DatabaseController {
 
+    Cache cache=new Cache();
+    BlockDao blockDao=new BlockDaoImpl();
     @ApiOperation(value = "增加区块", notes = "增加区块、加入队列")
     @RequestMapping(value = "/data", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -21,6 +31,8 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> addData(@RequestBody Block block) {
+        cache.addBlock(block);
+
         return null;
     }
 
@@ -32,6 +44,7 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> findData(@PathVariable("blockIndex") int blockIndex, @PathVariable("offset") int offset) {
+         String info=blockDao.getSingleRecord(blockIndex,offset);
         return null;
     }
 
@@ -72,7 +85,14 @@ public class DatabaseController {
         // 假设一次request能接受所有数据
         // 接受结束后，把缓存里的数据加入自己的链
         // 再在返回response之前，通知主机自己接受数据完毕
+        cache.removeAll();
+        for(Block block:blocks){cache.addBlock(block);}
+        cache.writeAllBlocks();
+
+
         return null;
     }
+
+
 
 }

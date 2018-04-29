@@ -1,8 +1,7 @@
 package database.data.dao.user;
 
 
-import fintech100k.WebService.entity.account.Role;
-import fintech100k.WebService.entity.account.User;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 
 @Service
 public interface UserDao {
-    User save(User user);
+    /*User save(User user);
 
     User findUserByUsername(String username);
 
@@ -18,5 +17,5 @@ public interface UserDao {
 
     ArrayList<User> findAll();
 
-    void delete(String username);
+    void delete(String username);*/
 }
