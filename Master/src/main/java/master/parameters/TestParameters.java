@@ -1,4 +1,4 @@
-package master.model;
+package master.parameters;
 
 public class TestParameters {
     private String accessToken;

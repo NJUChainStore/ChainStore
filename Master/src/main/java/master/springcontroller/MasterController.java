@@ -4,9 +4,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import master.blservice.MasterBlService;
-import master.global.entity.*;
-import master.model.ReceiveCompleteParameters;
-import master.model.SendCompleteParameters;
+import master.global.entity.Role;
+import master.parameters.ReceiveCompleteParameters;
+import master.parameters.SendCompleteParameters;
 import master.response.ReceiveCompleteReceivedResponse;
 import master.response.RegisterResponse;
 import master.response.Response;
@@ -16,16 +16,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 // 主机需要开一个定时线程
 
 @RestController
 public class MasterController {
 
     private final MasterBlService masterBlService;
-
-    private static Table table = new Table();
 
     @Autowired
     public MasterController(MasterBlService masterBlService) {
@@ -45,20 +41,7 @@ public class MasterController {
     })
     @ResponseBody
     public ResponseEntity<Response> register(@PathVariable("role") Role role) {
-        // 生成一个accessToken，在自己的表里增加一项为这个accessToken对应一台机器，其角色由PathVariable来决定
-        // 机器向主机请求时，需要带上accessToken，主机来检查这是哪一台机器
-        // 再生成一个masterToken，并发给注册者，注册者通过masterToken判断一次请求是否由主机发出
-        String accessToken = UUID.randomUUID().toString(); // 生成accessToken;
-        String masterToken = UUID.randomUUID().toString();
-        System.out.println(String.format("Register from %s accepted. Generated accessToken: %s, masterToken: %s", role, accessToken, masterToken));
-
-        if (role.equals(Role.MINER)) {
-            table.setMiner(new MinerItem(System.currentTimeMillis(), accessToken, masterToken));
-        } else {
-            table.getDatabases().add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available));
-        }
-
-        return new ResponseEntity<>(new RegisterResponse(accessToken, masterToken), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(masterBlService.register(role), HttpStatus.ACCEPTED);
     }
 
     @ApiOperation(value = "发送者发送结束", notes = "发送者发送结束，改发送者状态为可用")

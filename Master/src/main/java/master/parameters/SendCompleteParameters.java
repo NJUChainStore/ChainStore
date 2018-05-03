@@ -1,12 +1,12 @@
-package master.model;
+package master.parameters;
 
-public class ReceiveCompleteParameters {
+public class SendCompleteParameters {
     private String accessToken;
 
-    public ReceiveCompleteParameters() {
+    public SendCompleteParameters() {
     }
 
-    public ReceiveCompleteParameters(String accessToken) {
+    public SendCompleteParameters(String accessToken) {
         this.accessToken = accessToken;
     }
 
