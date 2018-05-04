@@ -1,5 +1,6 @@
 package master;
 
+import master.threads.ThreadStarter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +19,9 @@ public class Master {
 
     public static void main(String[] args) {
         SpringApplication.run(Master.class, args);
+        new ThreadStarter().runMasterThreads();
     }
+
 
     @Bean
     public Docket api() {

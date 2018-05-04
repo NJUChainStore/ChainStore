@@ -1,8 +1,5 @@
 package master.global.entity;
 
-import master.global.entity.DatabaseItem;
-import master.global.entity.MinerItem;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,18 +1,17 @@
 package master.blservice;
 
 import master.global.entity.Role;
-import master.response.ReceiveCompleteReceivedResponse;
-import master.response.RegisterResponse;
-import master.response.SendCompleteReceivedResponse;
+import master.response.*;
 
 public interface MasterBlService {
     /**
      * register a machine
      *
      * @param role
+     * @param ip
      * @return
      */
-    RegisterResponse register(Role role);
+    RegisterResponse register(Role role, String ip);
 
     /**
      * send complete sign and set its state to free
@@ -30,5 +29,20 @@ public interface MasterBlService {
      */
     ReceiveCompleteReceivedResponse receiveComplete(String id);
 
+    /**
+     * find the block's info with the index and offset
+     *
+     * @param blockIndex
+     * @param blockOffset
+     * @return
+     */
+    FindBlockInfoResponse findBlockInfo(long blockIndex, long blockOffset);
 
+    /**
+     * save the info
+     *
+     * @param data
+     * @return
+     */
+    SaveInfoResponse saveInfo(String data);
 }

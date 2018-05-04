@@ -5,12 +5,11 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import master.blservice.MasterBlService;
 import master.global.entity.Role;
+import master.parameters.FindBlockInfoParameters;
 import master.parameters.ReceiveCompleteParameters;
+import master.parameters.SaveInfoParameters;
 import master.parameters.SendCompleteParameters;
-import master.response.ReceiveCompleteReceivedResponse;
-import master.response.RegisterResponse;
-import master.response.Response;
-import master.response.SendCompleteReceivedResponse;
+import master.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +39,8 @@ public class MasterController {
             @ApiResponse(code = 200, message = "Registered", response = RegisterResponse.class),
     })
     @ResponseBody
-    public ResponseEntity<Response> register(@PathVariable("role") Role role) {
-        return new ResponseEntity<>(masterBlService.register(role), HttpStatus.ACCEPTED);
+    public ResponseEntity<Response> register(@PathVariable("role") Role role, @RequestParam(name = "ip") String ip) {
+        return new ResponseEntity<>(masterBlService.register(role, ip), HttpStatus.ACCEPTED);
     }
 
     @ApiOperation(value = "发送者发送结束", notes = "发送者发送结束，改发送者状态为可用")
@@ -66,4 +65,25 @@ public class MasterController {
         return new ResponseEntity<>(masterBlService.receiveComplete(receiveCompleteParameters.getAccessToken()), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "矿机挖出矿", notes = "矿机挖出矿，广播给存储机")
+    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Acknowledged", response = FindBlockInfoResponse.class),
+            @ApiResponse(code = 403, message = "Not sender"),
+    })
+    @ResponseBody
+    public ResponseEntity<Response> findBlockInfo(@RequestBody FindBlockInfoParameters findBlockInfoParameters) {
+        return new ResponseEntity<>(masterBlService.findBlockInfo(findBlockInfoParameters.getBlockIndex(), findBlockInfoParameters.getBlockOffset()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "用户保存信息", notes = "用户保存信息，存入缓冲区")
+    @RequestMapping(value = "/saveInfo", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Acknowledged", response = SaveInfoResponse.class),
+            @ApiResponse(code = 403, message = "Not sender"),
+    })
+    @ResponseBody
+    public ResponseEntity<Response> saveInfo(@RequestBody SaveInfoParameters saveInfoParameters) {
+        return new ResponseEntity<>(masterBlService.saveInfo(saveInfoParameters.getInfo()), HttpStatus.OK);
+    }
 }

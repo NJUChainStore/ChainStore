@@ -4,26 +4,25 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import mining.model.Parameter;
-import mining.model.TestParameters;
 import mining.response.MineCompleteResponse;
 import mining.response.RegisterResponse;
 import mining.response.Response;
-import mining.response.WrongResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import static mining.token.TokenManager.*;
 
 import java.security.MessageDigest;
+
+import static mining.token.TokenManager.accessToken;
+import static mining.token.TokenManager.masterToken;
 
 @RestController
 public class MinerController {
 
     @Value("${master.address}")
     private String masterAddress;
-
 
 
     @ApiOperation(value = "挖矿向主机注册", notes = "矿机启动后应该向主机注册")
@@ -50,8 +49,8 @@ public class MinerController {
     @ApiOperation(value = "挖矿", notes = "挖矿")
     @RequestMapping(value = "/mine", method = RequestMethod.POST)
     @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Returns the hash for block", response = MineCompleteResponse.class),
-        @ApiResponse(code = 403, message = "Not master"),
+            @ApiResponse(code = 200, message = "Returns the hash for block", response = MineCompleteResponse.class),
+            @ApiResponse(code = 403, message = "Not master"),
     })
     @ResponseBody
     public ResponseEntity<Response> getInstanceInformation(@RequestBody Parameter parameter) {
@@ -61,31 +60,31 @@ public class MinerController {
         int nonce = 0;
 
         String target = new String(new char[parameter.getDifficulty()]).replace('\0', '0'); //创建一个用 difficulty * "0" 组成的字符串
-        while(!hash.substring(0, parameter.getDifficulty()).equals(target)) {
+        while (!hash.substring(0, parameter.getDifficulty()).equals(target)) {
             nonce++;
             hash = calculateHash(parameter.getPreviousHash(), timestamp, nonce, parameter.getBase64Data());
         }
         return new ResponseEntity<>(new MineCompleteResponse(
-            parameter.getPreviousHash(),
-            parameter.getDifficulty(),
-            parameter.getBase64Data(),
-            nonce,
-            hash,
-            timestamp
+                parameter.getPreviousHash(),
+                parameter.getDifficulty(),
+                parameter.getBase64Data(),
+                nonce,
+                hash,
+                timestamp
         ), HttpStatus.OK);
     }
 
     public String calculateHash(String previousHash, long timeStamp, int nonce, String data) {
         String calculatedhash = applySha256(
-            previousHash +
-                Long.toString(timeStamp) +
-                Integer.toString(nonce) +
-                data
+                previousHash +
+                        Long.toString(timeStamp) +
+                        Integer.toString(nonce) +
+                        data
         );
         return calculatedhash;
     }
 
-    public String applySha256(String input){
+    public String applySha256(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             //对输入使用 sha256 算法
@@ -97,8 +96,7 @@ public class MinerController {
                 hexString.append(hex);
             }
             return hexString.toString();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
