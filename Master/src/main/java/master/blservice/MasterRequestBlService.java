@@ -7,11 +7,7 @@ public interface MasterRequestBlService {
      * send request to ask database to validate itself
      *
      * @param databaseItem
+     * @param index
      */
-    void sendValidateRequest(DatabaseItem databaseItem);
-
-    /**
-     * get block from mining and broadcast to database
-     */
-    void calculateBlockAndBroadcast();
+    void sendValidateRequest(DatabaseItem databaseItem, int index);
 }

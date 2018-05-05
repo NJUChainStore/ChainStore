@@ -1,8 +1,10 @@
-package master.global.model;
+package master.getreponse;
+
+import master.response.Response;
 
 import java.util.ArrayList;
 
-public class Block {
+public class MineCompleteResponse extends Response {
     private String previousHash;
     private int difficulty;
     private ArrayList<String> base64Data;
@@ -10,10 +12,8 @@ public class Block {
     private String hash;
     private long timestamp;
 
-    public Block() {
-    }
 
-    public Block(String previousHash, int difficulty, ArrayList<String> base64Data, int nonce, String hash, long timestamp) {
+    public MineCompleteResponse(String previousHash, int difficulty, ArrayList<String> base64Data, int nonce, String hash, long timestamp) {
         this.previousHash = previousHash;
         this.difficulty = difficulty;
         this.base64Data = base64Data;

@@ -1,14 +1,20 @@
-package mining.model;
+package master.request;
 
 import java.util.ArrayList;
 
-public class Parameter {
+public class MineParameter {
     private String previousHash;
     private int difficulty;
     private ArrayList<String> base64Data;
 
 
-    public Parameter() {
+    public MineParameter() {
+    }
+
+    public MineParameter(String previousHash, int difficulty, ArrayList<String> base64Data) {
+        this.previousHash = previousHash;
+        this.difficulty = difficulty;
+        this.base64Data = base64Data;
     }
 
     public String getPreviousHash() {

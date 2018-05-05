@@ -1,30 +1,30 @@
 package master.parameters;
 
 public class FindBlockInfoParameters {
-    private long blockIndex;
-    private long blockOffset;
+    private int blockIndex;
+    private int blockOffset;
 
     public FindBlockInfoParameters() {
     }
 
-    public FindBlockInfoParameters(long blockIndex, long blockOffset) {
+    public FindBlockInfoParameters(int blockIndex, int blockOffset) {
         this.blockIndex = blockIndex;
         this.blockOffset = blockOffset;
     }
 
-    public long getBlockIndex() {
+    public int getBlockIndex() {
         return blockIndex;
     }
 
-    public void setBlockIndex(long blockIndex) {
+    public void setBlockIndex(int blockIndex) {
         this.blockIndex = blockIndex;
     }
 
-    public long getBlockOffset() {
+    public int getBlockOffset() {
         return blockOffset;
     }
 
-    public void setBlockOffset(long blockOffset) {
+    public void setBlockOffset(int blockOffset) {
         this.blockOffset = blockOffset;
     }
 }

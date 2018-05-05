@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import master.blservice.MasterBlService;
+import master.exception.NoAvailableDatabaseException;
 import master.global.entity.Role;
 import master.parameters.FindBlockInfoParameters;
 import master.parameters.ReceiveCompleteParameters;
@@ -70,10 +71,16 @@ public class MasterController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = FindBlockInfoResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
+            @ApiResponse(code = 503, message = "No available database")
     })
     @ResponseBody
     public ResponseEntity<Response> findBlockInfo(@RequestBody FindBlockInfoParameters findBlockInfoParameters) {
-        return new ResponseEntity<>(masterBlService.findBlockInfo(findBlockInfoParameters.getBlockIndex(), findBlockInfoParameters.getBlockOffset()), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(masterBlService.findBlockInfo(findBlockInfoParameters.getBlockIndex(), findBlockInfoParameters.getBlockOffset()), HttpStatus.OK);
+        } catch (NoAvailableDatabaseException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getResponse(), HttpStatus.SERVICE_UNAVAILABLE);
+        }
     }
 
     @ApiOperation(value = "用户保存信息", notes = "用户保存信息，存入缓冲区")

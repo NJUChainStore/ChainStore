@@ -1,5 +1,6 @@
 package master.blservice;
 
+import master.exception.NoAvailableDatabaseException;
 import master.global.entity.Role;
 import master.response.*;
 
@@ -36,7 +37,7 @@ public interface MasterBlService {
      * @param blockOffset
      * @return
      */
-    FindBlockInfoResponse findBlockInfo(long blockIndex, long blockOffset);
+    FindBlockInfoResponse findBlockInfo(int blockIndex, int blockOffset) throws NoAvailableDatabaseException;
 
     /**
      * save the info
