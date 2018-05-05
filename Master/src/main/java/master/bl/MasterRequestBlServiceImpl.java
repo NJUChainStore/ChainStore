@@ -1,21 +1,18 @@
 package master.bl;
 
 import master.blservice.MasterRequestBlService;
-import master.config.MasterConfig;
-import master.getreponse.BlockAddedResponse;
-import master.getreponse.MineCompleteResponse;
+import master.getreponse.ReceiveStartedResponse;
+import master.getreponse.SendStartedResponse;
 import master.getreponse.ValidateResponse;
-import master.global.BufferManager;
 import master.global.TableManager;
 import master.global.entity.DatabaseItem;
 import master.global.entity.DatabaseState;
-import master.global.model.Block;
-import master.request.MineParameter;
+import master.request.ReceiveStartInfo;
+import master.request.SendStartInfo;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -43,39 +40,51 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
             databaseItemList.set(index, databaseItem);
             TableManager.table.setDatabases(databaseItemList);
 
-
+            askToSend(databaseItem, index);
         }
     }
 
-    @Async
-    void askToSend() {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        String url = databaseItem.getIp() + "/validate";
-        ValidateResponse validateResponse = restTemplate.exchange(url, HttpMethod.GET, entity, ValidateResponse.class).getBody();
-    }
-
-    @Async
-    void askToReceive() {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-        String mineUrl = TableManager.table.getMiner().getIp();
-        HttpEntity<MineParameter> entity = new HttpEntity<>(new MineParameter(TableManager.table.getPreviousHash(), MasterConfig.DIFFICULTY, BufferManager.l2Buffer.getInfos()), headers);
-        MineCompleteResponse mineCompleteResponseResponseEntity = restTemplate.exchange(mineUrl, HttpMethod.POST, entity, MineCompleteResponse.class).getBody();
-        BufferManager.l2Buffer.clear();
-        TableManager.table.updateBlockIndex();
-
-        for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {
-            if (isToBroadcast(databaseItem)) {
-                HttpEntity<Block> blockHttpEntity = new HttpEntity<>(new Block(mineCompleteResponseResponseEntity.getPreviousHash(), mineCompleteResponseResponseEntity.getDifficulty(), mineCompleteResponseResponseEntity.getBase64Data(), mineCompleteResponseResponseEntity.getNonce(), mineCompleteResponseResponseEntity.getHash(), mineCompleteResponseResponseEntity.getTimestamp()), headers);
-                BlockAddedResponse blockAddedResponse = restTemplate.exchange(databaseItem.getIp(), HttpMethod.POST, entity, BlockAddedResponse.class).getBody();
+    void askToSend(DatabaseItem databaseItem, int index) {
+        String senderAddress = "";
+        String senderToken = "";
+        int senderIndex = 0;
+        List<DatabaseItem> databaseItems = TableManager.table.getDatabases();
+        for (int i = 0; i < databaseItems.size(); i++) {
+            if (databaseItems.get(i).getState() == DatabaseState.Available) {
+                senderAddress = databaseItems.get(i).getIp();
+                senderToken = databaseItems.get(i).getAccessToken();
+                senderIndex = i;
             }
         }
+
+        askToReceive(databaseItem, senderAddress);
+        DatabaseItem temp1 = databaseItems.get(index);
+        temp1.setState(DatabaseState.Receiving);
+        databaseItems.set(index, temp1);
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+        HttpEntity<SendStartInfo> entity = new HttpEntity<>(new SendStartInfo(databaseItem.getIp()), headers);
+        String url = senderAddress + "/send";
+        SendStartedResponse sendStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, SendStartedResponse.class).getBody();
+
+        DatabaseItem temp2 = databaseItems.get(index);
+        temp2.setState(DatabaseState.Sending);
+        databaseItems.set(index, temp2);
+
+        TableManager.table.setDatabases(databaseItems);
+    }
+
+    void askToReceive(DatabaseItem databaseItem, String senderToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+
+        HttpEntity<ReceiveStartInfo> entity = new HttpEntity<>(new ReceiveStartInfo(senderToken), headers);
+        String url = databaseItem.getIp() + "/receive";
+        ReceiveStartedResponse receiveStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, ReceiveStartedResponse.class).getBody();
     }
 
 }
