@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static mining.token.TokenManager.accessToken;
 import static mining.token.TokenManager.masterToken;
@@ -74,12 +77,12 @@ public class MinerController {
         ), HttpStatus.OK);
     }
 
-    public String calculateHash(String previousHash, long timeStamp, int nonce, String data) {
+    public String calculateHash(String previousHash, long timeStamp, int nonce, ArrayList<String> data) {
         String calculatedhash = applySha256(
                 previousHash +
                         Long.toString(timeStamp) +
                         Integer.toString(nonce) +
-                        data
+                        data.stream().collect(Collectors.joining("/"))
         );
         return calculatedhash;
     }

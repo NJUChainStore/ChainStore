@@ -42,4 +42,14 @@ public class Cache {
     private void reSort(){
         //重新排序
     }
+
+    public int findMaxIndex(){
+        int max=-1;
+        for(Block block:blocks){
+            if(block.getIndex()>max){
+                max=(int)block.getIndex();
+            }
+        }
+        return max;
+    }
 }
