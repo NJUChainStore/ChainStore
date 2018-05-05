@@ -42,7 +42,7 @@ public class NotifyDatabaseThread implements Runnable {
                         databaseItem.setLastValidateTime(nowTime);
                         databaseItem.setState(DatabaseState.Validating);
                         databaseItemList.set(i, databaseItem);
-                        masterRequestBlService.sendValidateRequest(databaseItemList.get(i));
+                        masterRequestBlService.sendValidateRequest(databaseItemList.get(i), );
                     }
                 }
                 TableManager.table.setDatabases(databaseItemList);

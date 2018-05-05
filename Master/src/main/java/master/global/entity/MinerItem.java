@@ -4,7 +4,7 @@ public class MinerItem {
     private long registerTimestamp;
     private String accessToken;
     private String masterToken;
-
+    private String ip;
 
     public long getRegisterTimestamp() {
         return registerTimestamp;
@@ -30,9 +30,21 @@ public class MinerItem {
         this.accessToken = accessToken;
     }
 
-    public MinerItem(long registerTimestamp, String accessToken, String masterToken) {
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public MinerItem() {
+    }
+
+    public MinerItem(long registerTimestamp, String accessToken, String masterToken, String ip) {
         this.registerTimestamp = registerTimestamp;
         this.accessToken = accessToken;
         this.masterToken = masterToken;
+        this.ip = ip;
     }
 }

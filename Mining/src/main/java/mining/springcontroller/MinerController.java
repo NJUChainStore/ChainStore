@@ -3,7 +3,7 @@ package mining.springcontroller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import mining.model.Parameter;
+import mining.model.MineParameter;
 import mining.response.MineCompleteResponse;
 import mining.response.RegisterResponse;
 import mining.response.Response;
@@ -53,21 +53,21 @@ public class MinerController {
             @ApiResponse(code = 403, message = "Not master"),
     })
     @ResponseBody
-    public ResponseEntity<Response> getInstanceInformation(@RequestBody Parameter parameter) {
+    public ResponseEntity<Response> mine(@RequestBody MineParameter mineParameter) {
 
         String hash = "";
         long timestamp = System.currentTimeMillis();
         int nonce = 0;
 
-        String target = new String(new char[parameter.getDifficulty()]).replace('\0', '0'); //创建一个用 difficulty * "0" 组成的字符串
-        while (!hash.substring(0, parameter.getDifficulty()).equals(target)) {
+        String target = new String(new char[mineParameter.getDifficulty()]).replace('\0', '0'); //创建一个用 difficulty * "0" 组成的字符串
+        while (!hash.substring(0, mineParameter.getDifficulty()).equals(target)) {
             nonce++;
-            hash = calculateHash(parameter.getPreviousHash(), timestamp, nonce, parameter.getBase64Data());
+            hash = calculateHash(mineParameter.getPreviousHash(), timestamp, nonce, mineParameter.getBase64Data());
         }
         return new ResponseEntity<>(new MineCompleteResponse(
-                parameter.getPreviousHash(),
-                parameter.getDifficulty(),
-                parameter.getBase64Data(),
+                mineParameter.getPreviousHash(),
+                mineParameter.getDifficulty(),
+                mineParameter.getBase64Data(),
                 nonce,
                 hash,
                 timestamp
