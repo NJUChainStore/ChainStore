@@ -1,6 +1,6 @@
 package database.exception;
 
-import trapx00.tagx00.response.WrongResponse;
+import database.response.WrongResponse;
 
 public class SystemException extends Exception {
     private WrongResponse response = new WrongResponse(10001, "System is error.");

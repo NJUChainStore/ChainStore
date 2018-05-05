@@ -18,7 +18,7 @@ public interface BlockDao {
     void pushAllBlocks(ArrayList<Block> blocks);
 
     //校验数据正确性，返回自然数说明该块号后的数据错误。返回-1 说明全部正确。
-    int  check ();
+    int  check (int maxValue);
 
 
 }

@@ -2,27 +2,22 @@ package database.springcontroller;
 
 import database.data.dao.user.BlockDao;
 import database.data.daoimpl.user.BlockDaoImpl;
-import database.model.Block;
-import database.model.Cache;
-import database.model.DataReceivedResponse;
-import database.model.ReceiveStartInfo;
+import database.model.*;
+import database.response.DataReceivedResponse;
 import database.response.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 @RestController
 public class DatabaseController {
 
     Cache cache=new Cache();
     BlockDao blockDao=new BlockDaoImpl();
+    GlobalData globalData=new GlobalData();
     @ApiOperation(value = "增加区块", notes = "增加区块、加入队列")
     @RequestMapping(value = "/data", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -31,9 +26,15 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> addData(@RequestBody Block block) {
-        cache.addBlock(block);
 
-        return null;
+        cache.addBlock(block);
+        if(globalData.getState().equals(State.VALID)){
+            setMaxIndex();
+            cache.writeAllBlocks();
+        }
+        BlockAddedResponse blockAddedResponse=        new BlockAddedResponse();
+        blockAddedResponse.setBlockIndex(globalData.getLatestBlockIndex());
+        return new ResponseEntity<>(blockAddedResponse,HttpStatus.OK);
     }
 
     @ApiOperation(value = "查找区块", notes = "根据区块号和区块偏移查找数据")
@@ -45,7 +46,9 @@ public class DatabaseController {
     @ResponseBody
     public ResponseEntity<Response> findData(@PathVariable("blockIndex") int blockIndex, @PathVariable("offset") int offset) {
          String info=blockDao.getSingleRecord(blockIndex,offset);
-        return null;
+         BlockFoundResponse blockFoundResponse=new BlockFoundResponse();
+         blockFoundResponse.setBase64Data(info);
+        return new ResponseEntity<>(blockFoundResponse,HttpStatus.OK);
     }
 
     @ApiOperation(value = "验证链正确性", notes = "验证链正确性")
@@ -59,7 +62,22 @@ public class DatabaseController {
         // 进入方法改自己状态为正在验证
         // 验证成功，改自己状态为可用
         // 不成功，改自己状态为无效，并记住第一个无效块的索引
-        return null;
+        globalData.setState(State.CHECKING);
+       int res= blockDao.check(globalData.getLatestBlockIndex());
+       ValidateResponse validateResponse=new ValidateResponse();
+
+       if(res==-1){
+           validateResponse.setResult(true);
+           validateResponse.setStartingInvalidBlockIndex(-1);
+           globalData.setState(State.VALID);
+       }else{
+           validateResponse.setResult(false);
+           //清空缓存
+           cache.removeAll();
+           validateResponse.setStartingInvalidBlockIndex(res);
+           globalData.setState(State.INVALID);
+       }
+        return new ResponseEntity (validateResponse,HttpStatus.OK);
     }
 
 
@@ -71,7 +89,8 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> startReceivingData(@RequestBody ReceiveStartInfo info) {
-        return null;
+
+        return new ResponseEntity<>(new ReceiveStartedResponse(),HttpStatus.OK);
     }
 
     @ApiOperation(value = "接受数据", notes = "无效状态下，接受数据")
@@ -85,14 +104,22 @@ public class DatabaseController {
         // 假设一次request能接受所有数据
         // 接受结束后，把缓存里的数据加入自己的链
         // 再在返回response之前，通知主机自己接受数据完毕
-        cache.removeAll();
+        //cache.removeAll();
         for(Block block:blocks){cache.addBlock(block);}
+        setMaxIndex();
+        DataReceivedResponse dataReceivedResponse=new DataReceivedResponse();
+         dataReceivedResponse.setLatestIndex(cache.findMaxIndex());
         cache.writeAllBlocks();
 
-
-        return null;
+        return new ResponseEntity<>(dataReceivedResponse,HttpStatus.OK);
     }
 
+    private void setMaxIndex(){
+        int max = -1;
+        max=cache.findMaxIndex();
+        if(max!=-1)
+            globalData.setLatestBlockIndex(max);
+    }
 
 
 }

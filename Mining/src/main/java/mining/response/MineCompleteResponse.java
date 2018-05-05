@@ -1,16 +1,17 @@
 package mining.response;
 
+import java.util.ArrayList;
+
 public class MineCompleteResponse extends Response {
     private String previousHash;
     private int difficulty;
-    private String base64Data;
+    private ArrayList<String> base64Data;
     private int nonce;
     private String hash;
     private long timestamp;
 
 
-
-    public MineCompleteResponse(String previousHash, int difficulty, String base64Data, int nonce, String hash, long timestamp) {
+    public MineCompleteResponse(String previousHash, int difficulty, ArrayList<String> base64Data, int nonce, String hash, long timestamp) {
         this.previousHash = previousHash;
         this.difficulty = difficulty;
         this.base64Data = base64Data;
@@ -35,11 +36,11 @@ public class MineCompleteResponse extends Response {
         this.difficulty = difficulty;
     }
 
-    public String getBase64Data() {
+    public ArrayList<String> getBase64Data() {
         return base64Data;
     }
 
-    public void setBase64Data(String base64Data) {
+    public void setBase64Data(ArrayList<String> base64Data) {
         this.base64Data = base64Data;
     }
 

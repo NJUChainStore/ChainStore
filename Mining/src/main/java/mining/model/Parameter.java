@@ -1,9 +1,11 @@
 package mining.model;
 
+import java.util.ArrayList;
+
 public class Parameter {
     private String previousHash;
     private int difficulty;
-    private String base64Data;
+    private ArrayList<String> base64Data;
 
 
     public Parameter() {
@@ -25,11 +27,11 @@ public class Parameter {
         this.difficulty = difficulty;
     }
 
-    public String getBase64Data() {
+    public ArrayList<String> getBase64Data() {
         return base64Data;
     }
 
-    public void setBase64Data(String base64Data) {
+    public void setBase64Data(ArrayList<String> base64Data) {
         this.base64Data = base64Data;
     }
 }
