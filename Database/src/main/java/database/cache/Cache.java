@@ -1,22 +1,23 @@
-package database.model;
+package database.cache;
 
 import database.data.dao.user.BlockDao;
 import database.data.daoimpl.user.BlockDaoImpl;
+import database.model.Block;
 
 import java.util.ArrayList;
 
 public class Cache {
     //每台机器对应的缓存，这是一个优先队列。
-    private ArrayList<Block> blocks=new ArrayList<Block>();
-    BlockDao blockDao=new BlockDaoImpl();
-    public boolean addBlock(Block block){
+    private static ArrayList<Block> blocks = new ArrayList<>();
+    private static BlockDao blockDao = new BlockDaoImpl();
+    public static boolean addBlock(Block block){
         //向缓存中增加一个区块
         blocks.add(block);
         reSort();//不知道有没有重新排序的必要
         return true;
     }
 
-    public boolean writeBlock(){
+    public static boolean writeBlock(){
         // 向存储盘中写入一个区块
         if(blocks.size()>0) {
             blockDao.pushSingleBlock(blocks.get(0));
@@ -25,25 +26,25 @@ public class Cache {
         return true;
     }
 
-    public boolean writeAllBlocks(){
+    public static boolean writeAllBlocks(){
         //向存储盘中写入所有区块
-        blockDao.pushAllBlocks(this.blocks);
+        blockDao.pushAllBlocks(blocks);
         removeAll();
         return true;
     }
 
-    public void removeAll(){
+    public static void removeAll(){
         // 清空缓存
         while(blocks.size()>0){
             blocks.remove(0);
         }
     }
 
-    private void reSort(){
+    private static void reSort(){
         //重新排序
     }
 
-    public int findMaxIndex(){
+    public static int findMaxIndex(){
         int max=-1;
         for(Block block:blocks){
             if(block.getIndex()>max){

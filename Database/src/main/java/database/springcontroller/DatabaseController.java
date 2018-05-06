@@ -1,5 +1,6 @@
 package database.springcontroller;
 
+import database.cache.Cache;
 import database.data.dao.user.BlockDao;
 import database.data.daoimpl.user.BlockDaoImpl;
 import database.model.*;
@@ -15,9 +16,10 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class DatabaseController {
 
-    Cache cache=new Cache();
     BlockDao blockDao=new BlockDaoImpl();
+
     GlobalData globalData=GlobalData.getInstance();
+
     @ApiOperation(value = "增加区块", notes = "增加区块、加入队列")
     @RequestMapping(value = "/data", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -27,10 +29,10 @@ public class DatabaseController {
     @ResponseBody
     public ResponseEntity<Response> addData(@RequestBody Block block) {
 
-        cache.addBlock(block);
+        Cache.addBlock(block);
         if(globalData.getState().equals(State.VALID)){
             setMaxIndex();
-            cache.writeAllBlocks();
+            Cache.writeAllBlocks();
         }
         BlockAddedResponse blockAddedResponse=        new BlockAddedResponse();
         blockAddedResponse.setBlockIndex(globalData.getLatestBlockIndex());
@@ -79,11 +81,11 @@ public class DatabaseController {
        }else{
            validateResponse.setResult(false);
            //清空缓存
-           cache.removeAll();
+           Cache.removeAll();
            validateResponse.setStartingInvalidBlockIndex(res);
            globalData.setState(State.INVALID);
        }
-        return new ResponseEntity (validateResponse,HttpStatus.OK);
+        return new ResponseEntity<>(validateResponse,HttpStatus.OK);
     }
 
 
@@ -95,7 +97,7 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> startReceivingData(@RequestBody ReceiveStartInfo info) {
-
+        globalData.setState(State.RECEIVING);
         return new ResponseEntity<>(new ReceiveStartedResponse(),HttpStatus.OK);
     }
 
@@ -111,11 +113,11 @@ public class DatabaseController {
         // 接受结束后，把缓存里的数据加入自己的链
         // 再在返回response之前，通知主机自己接受数据完毕
         //cache.removeAll();
-        for(Block block:blocks){cache.addBlock(block);}
+        for(Block block:blocks){Cache.addBlock(block);}
         setMaxIndex();
         DataReceivedResponse dataReceivedResponse=new DataReceivedResponse();
-         dataReceivedResponse.setLatestIndex(cache.findMaxIndex());
-        cache.writeAllBlocks();
+         dataReceivedResponse.setLatestIndex(Cache.findMaxIndex());
+        Cache.writeAllBlocks();
         if(isLatest()==true){
             globalData.setState(State.VALID);
         }else{
@@ -132,12 +134,13 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> startSendingData(@RequestBody ReceiveStartInfo info) {
+
         return null;
     }
 
     private void setMaxIndex(){
         int max = -1;
-        max=cache.findMaxIndex();
+        max=Cache.findMaxIndex();
         if(max!=-1)
             globalData.setLatestBlockIndex(max);
     }
