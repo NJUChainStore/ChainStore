@@ -12,6 +12,8 @@ public class MineCompleteResponse extends Response {
     private String hash;
     private long timestamp;
 
+    public MineCompleteResponse() {
+    }
 
     public MineCompleteResponse(String previousHash, int difficulty, ArrayList<String> base64Data, int nonce, String hash, long timestamp) {
         this.previousHash = previousHash;

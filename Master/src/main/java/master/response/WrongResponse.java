@@ -4,6 +4,9 @@ public class WrongResponse extends Response {
     private int infoCode;
     private String description;
 
+    public WrongResponse() {
+    }
+
     public WrongResponse(int infoCode, String description) {
         this.infoCode = infoCode;
         this.description = description;
