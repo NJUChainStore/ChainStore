@@ -6,10 +6,7 @@ import io.swagger.annotations.ApiResponses;
 import master.blservice.MasterBlService;
 import master.exception.NoAvailableDatabaseException;
 import master.global.entity.Role;
-import master.parameters.FindBlockInfoParameters;
-import master.parameters.ReceiveCompleteParameters;
-import master.parameters.SaveInfoParameters;
-import master.parameters.SendCompleteParameters;
+import master.parameters.*;
 import master.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -92,5 +89,16 @@ public class MasterController {
     @ResponseBody
     public ResponseEntity<Response> saveInfo(@RequestBody SaveInfoParameters saveInfoParameters) {
         return new ResponseEntity<>(masterBlService.saveInfo(saveInfoParameters.getInfo()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "数据机查看自己是否是最新版", notes = "数据机查看自己是否是最新版")
+    @RequestMapping(value = "/isDatabaseUpdate", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Acknowledged", response = IsDatabaseUpdateResponse.class),
+            @ApiResponse(code = 403, message = "Not sender"),
+    })
+    @ResponseBody
+    public ResponseEntity<Response> isDatabaseUpdate(@RequestBody IsDatabaseUpdateParameters isDatabaseUpdateParameters) {
+        return new ResponseEntity<>(masterBlService.isDatabaseUpdate(isDatabaseUpdateParameters.getLatestBlockIndex()), HttpStatus.OK);
     }
 }

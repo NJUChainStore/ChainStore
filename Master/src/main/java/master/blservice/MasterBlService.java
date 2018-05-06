@@ -46,4 +46,12 @@ public interface MasterBlService {
      * @return
      */
     SaveInfoResponse saveInfo(String data);
+
+    /**
+     * is the database all updated
+     *
+     * @param latestBlockIndex
+     * @return
+     */
+    IsDatabaseUpdateResponse isDatabaseUpdate(int latestBlockIndex);
 }

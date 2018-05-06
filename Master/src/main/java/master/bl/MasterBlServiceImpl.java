@@ -44,10 +44,13 @@ public class MasterBlServiceImpl implements MasterBlService {
         String masterToken = UUID.randomUUID().toString();
         System.out.println(String.format("Register from %s accepted. Generated accessToken: %s, masterToken: %s", role, accessToken, masterToken));
 
-        if (role.equals(Role.MINER)) {
-            TableManager.table.setMiner(new MinerItem(System.currentTimeMillis(), accessToken, masterToken, ip));
-        } else {
-            TableManager.table.getDatabases().add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip));
+        boolean isIpExists = TableManager.table.getDatabases().stream().anyMatch(x -> x.getIp().equals(ip));
+        if (!isIpExists) {
+            if (role.equals(Role.MINER)) {
+                TableManager.table.setMiner(new MinerItem(System.currentTimeMillis(), accessToken, masterToken, ip));
+            } else {
+                TableManager.table.getDatabases().add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip));
+            }
         }
         return new RegisterResponse(accessToken, masterToken);
     }
@@ -107,6 +110,17 @@ public class MasterBlServiceImpl implements MasterBlService {
             saveBlockToDatabase();
         }
         return new SaveInfoResponse(blockIndex, blockOffset);
+    }
+
+    /**
+     * is the database all updated
+     *
+     * @param latestBlockIndex
+     * @return
+     */
+    @Override
+    public IsDatabaseUpdateResponse isDatabaseUpdate(int latestBlockIndex) {
+        return new IsDatabaseUpdateResponse(TableManager.table.getNowBlockIndex() - 1 == latestBlockIndex);
     }
 
     private String setDatabaseState(String id, DatabaseState databaseState) {
