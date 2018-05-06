@@ -140,11 +140,12 @@ public class MasterBlServiceImpl implements MasterBlService {
 
     private String findInfoFromDatabase(int blockIndex, int blockOffset) throws NoAvailableDatabaseException {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
         for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {
             if (databaseItem.getState() == DatabaseState.Available) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                headers.add("Authentication", databaseItem.getMasterToken());
                 HttpEntity<String> entity = new HttpEntity<>(null, headers);
                 String url = databaseItem.getIp() + "/" + blockIndex + "/" + blockOffset;
                 BlockFoundResponse blockFoundResponse = restTemplate.exchange(url, HttpMethod.GET, entity, BlockFoundResponse.class).getBody();
