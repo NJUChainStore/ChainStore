@@ -39,19 +39,19 @@ public class RegisterAndAccessTest {
     }
 
 
-    @Test
-    public void accessWithoutRegister() {
-        assertEquals("invalid",minerController.test());
-
-    }
-
-    @Test
-    public void accessAfterRegister() {
-        minerController.register();
-        assertEquals("miner request", minerController.test());
-    }
-
-    private String getRoute(String route) {
-        return "http://localhost:" + port + "/" + route;
-    }
+//    @Test
+//    public void accessWithoutRegister() {
+//        assertEquals("invalid",minerController.test());
+//
+//    }
+//
+//    @Test
+//    public void accessAfterRegister() {
+//        minerController.register();
+//        assertEquals("miner request", minerController.test());
+//    }
+//
+//    private String getRoute(String route) {
+//        return "http://localhost:" + port + "/" + route;
+//    }
 }

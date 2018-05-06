@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -19,12 +20,26 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import static mining.token.TokenManager.accessToken;
+import static mining.token.TokenManager.masterToken;
+
 @SpringBootApplication
 @EnableSwagger2
 public class Miner {
 
+    private final static String masterAddress = "http://localhost:8080";
+
     public static void main(String[] args) {
         SpringApplication.run(Miner.class, args);
+        register();
+
+    }
+
+    private static void register() {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<RegisterResponse> entity = restTemplate.postForEntity(masterAddress + "/register/MINER", new RegisterParameters("http://localhost:8079"), RegisterResponse.class);
+        masterToken = entity.getBody().getMasterToken();
+        accessToken = entity.getBody().getAccessToken();
     }
 
     @Bean
@@ -44,13 +59,5 @@ public class Miner {
                 .contact(new Contact("Trap x00", "https://github.com/trapx00", "445073309@qq.com"))
                 .version("1.0")
                 .build();
-    }
-
-    private static void registerToMaster() {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<RegisterParameters> entity = new HttpEntity<>(new RegisterParameters("http://localhost:8081"), headers);
-        String url = "http://localhost:8080/register/" + Role.MINER;
-        RegisterResponse registerResponse = restTemplate.exchange(url, HttpMethod.POST, entity, RegisterResponse.class).getBody();
     }
 }

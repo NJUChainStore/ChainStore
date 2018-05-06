@@ -1,10 +1,8 @@
 server:
-  port: 3001
+  port: 8079
 logging:
   level:
     org.springframework:
       data: DEBUG
       security: DEBUG
 
-master:
-  address: "http://localhost:8080"

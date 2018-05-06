@@ -5,48 +5,17 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import mining.parameters.MineParameter;
 import mining.response.MineCompleteResponse;
-import mining.response.RegisterResponse;
 import mining.response.Response;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-import static mining.token.TokenManager.accessToken;
-import static mining.token.TokenManager.masterToken;
-
 @RestController
 public class MinerController {
-
-    @Value("${master.address}")
-    private String masterAddress;
-
-
-    @ApiOperation(value = "挖矿向主机注册", notes = "矿机启动后应该向主机注册")
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public String register() {
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<RegisterResponse> entity = restTemplate.getForEntity(masterAddress + "/register/MINER", RegisterResponse.class);
-        masterToken = entity.getBody().getMasterToken();
-        accessToken = entity.getBody().getAccessToken();
-        return String.format("Register complete. Got masterToken: %s, accessToken: %s", masterAddress, accessToken);
-
-    }
-
-    @ApiOperation(value = "挖矿向主机发起请求", notes = "挖矿向主机发起请求")
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String test() {
-        System.out.println(accessToken);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> entity = restTemplate.getForEntity(masterAddress + "/test", String.class);
-        return entity.getBody();
-
-    }
 
     @ApiOperation(value = "挖矿", notes = "挖矿")
     @RequestMapping(value = "/mine", method = RequestMethod.POST)
