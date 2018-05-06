@@ -3,6 +3,9 @@ package master.response;
 public class ReceiveCompleteReceivedResponse extends Response {
     private String masterToken;
 
+    public ReceiveCompleteReceivedResponse() {
+    }
+
     public ReceiveCompleteReceivedResponse(String masterToken) {
         this.masterToken = masterToken;
     }
