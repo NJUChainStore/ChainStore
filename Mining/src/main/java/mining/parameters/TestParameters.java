@@ -1,4 +1,4 @@
-package mining.model;
+package mining.parameters;
 
 public class TestParameters {
     private String accessToken;

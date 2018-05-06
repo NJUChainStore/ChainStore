@@ -104,8 +104,6 @@ public class MasterBlServiceImpl implements MasterBlService {
         BufferManager.buffer.add(data);
         long blockIndex = TableManager.table.getNowBlockIndex();
         long blockOffset = BufferManager.buffer.getNowOffset();
-        BufferManager.l2Buffer.setInfos(BufferManager.buffer.getInfos());
-        BufferManager.buffer.clear();
         if (BufferManager.buffer.isFull()) {
             saveBlockToDatabase();
         }
