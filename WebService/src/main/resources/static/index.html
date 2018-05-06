@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ChainStore Web Management Platform</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<body>
+<h1>
+    欢迎来到ChainStore Web管理平台！
+</h1>
+<div id="app">
+    <div>
+        <h2>注册一个项目！</h2>
+        <p>请输入项目名</p>
+        <input v-model="projectName" title="项目名"/>
+        <button v-on:click="addProject">增加项目</button>
+        <p v-if="!!error" style="color: red">{{ error }}</p>
+        <p v-if="previouslyAdded" style="color: green">
+            恭喜！您已经成功注册了 {{ previouslyAdded.name }} 项目。<br/>
+            请通过携带如下token访问您的项目：{{ previouslyAdded.token }}<br/>
+            切记请传输<strong>已经加密的经过base64编码的信息</strong>，<br/>
+            否则可能有数据被盗用或者信息丢失的风险
+        </p>
+    </div>
+    <div>
+        <h2>现有项目</h2>
+        <button v-on:click="refreshAllProjects">刷新项目列表</button>
+        <ol>
+            <li v-for="item in list">
+                {{ item }}
+            </li>
+        </ol>
+    </div>
+</div>
+<script>
+    var app = new Vue({
+        el: '#app',
+        methods: {
+            addProject: function () {
+                this.error = "";
+                this.previouslyAdded = null;
+                var _this = this;
+                fetch("/admin/project", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({projectName: this.projectName})
+                })
+                    .then(function (res) {
+                        if (res.ok) {
+                            res.json().then(function (data) {
+                                _this.previouslyAdded = {
+                                    name: _this.projectName,
+                                    token: data.token
+                                };
+                                _this.refreshAllProjects();
+                            })
+                        } else {
+                            if (res.status === 409) {
+                                _this.error = "项目名已经存在"
+                            } else {
+                                _this.error = "出错了。"
+                            }
+                        }
+
+                    })
+            },
+            refreshAllProjects: function () {
+                var _this = this;
+                fetch("/admin/project")
+                    .then(function (data) {
+                        return data.json();
+                    })
+                    .then(function (data) {
+                        _this.list = data.list;
+                    });
+            }
+        },
+        created: function () {
+            this.refreshAllProjects();
+        },
+        data: {
+            previouslyAdded: null,
+            projectName: '',
+            error: "",
+            list: []
+        }
+    });
+</script>
+</body>
+</html>
