@@ -114,6 +114,17 @@ public class DatabaseController {
         return new ResponseEntity<>(dataReceivedResponse,HttpStatus.OK);
     }
 
+    @ApiOperation(value = "开始发送数据", notes = "给链无效的机器发送数据")
+    @RequestMapping(value = "/send", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Information received", response = ReceiveStartedResponse.class),
+            @ApiResponse(code = 403, message = "Not master")
+    })
+    @ResponseBody
+    public ResponseEntity<Response> startSendingData(@RequestBody ReceiveStartInfo info) {
+        return null;
+    }
+
     private void setMaxIndex(){
         int max = -1;
         max=cache.findMaxIndex();
