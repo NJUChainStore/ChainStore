@@ -4,6 +4,9 @@ public class ValidateResponse extends Response {
     private boolean result;
     private long startingInvalidBlockIndex;
 
+    public ValidateResponse() {
+    }
+
     public boolean isResult() {
         return result;
     }

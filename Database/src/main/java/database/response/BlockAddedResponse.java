@@ -1,6 +1,9 @@
 package database.response;
 
 public class BlockAddedResponse extends Response {
+    public BlockAddedResponse() {
+    }
+
     private long blockIndex;
 
     public long getBlockIndex() {
