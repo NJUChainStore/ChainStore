@@ -3,7 +3,7 @@ package mining.springcontroller;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import mining.model.MineParameter;
+import mining.parameters.MineParameter;
 import mining.response.MineCompleteResponse;
 import mining.response.RegisterResponse;
 import mining.response.Response;
@@ -15,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static mining.token.TokenManager.accessToken;

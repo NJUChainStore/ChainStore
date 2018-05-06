@@ -17,10 +17,11 @@ import java.io.IOException;
 @WebFilter(urlPatterns = {"/*"}, filterName = "accessTokenValidateFilter")
 public class RequestFilter extends OncePerRequestFilter {
     private final static String REGISTER_URL = "/register";
+    private final static String SAVEINFO_URL = "/saveInfo";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (!request.getRequestURI().contains(REGISTER_URL)) {
+        if (!request.getRequestURI().contains(REGISTER_URL) && !request.getRequestURI().contains(SAVEINFO_URL)) {
             String auth = request.getHeader("Authentication");
             if (TableManager.table.getDatabases().stream().anyMatch(x -> x.getAccessToken().equals(auth))) {
                 RequestContextHolder.currentRequestAttributes().setAttribute("Role", 1, RequestAttributes.SCOPE_REQUEST);

@@ -25,7 +25,7 @@ public class Database {
 
     public static void main(String[] args) {
         SpringApplication.run(Database.class, args);
-        sendMessage();
+        registerToMaster();
     }
 
     @Bean
@@ -47,7 +47,7 @@ public class Database {
                 .build();
     }
 
-    private static void sendMessage() {
+    private static void registerToMaster() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<RegisterParameters> entity = new HttpEntity<>(new RegisterParameters("http://localhost:8081"), headers);

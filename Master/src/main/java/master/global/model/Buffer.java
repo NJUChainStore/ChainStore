@@ -3,7 +3,7 @@ package master.global.model;
 import java.util.ArrayList;
 
 public class Buffer {
-    private static final int MAX_NUMBER = 10000;
+    private static final int MAX_NUMBER = 10;
     private ArrayList<String> infos = new ArrayList<>();
 
     public void add(String info) {
