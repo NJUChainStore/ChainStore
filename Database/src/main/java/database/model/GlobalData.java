@@ -7,7 +7,7 @@ public class GlobalData {
   private  String masterIP="localhost:8080";
   private  String masterToken;
   private  String accessToken;
-
+  private static GlobalData globalData=new GlobalData();
     public State getState() {
         return state;
     }
@@ -46,5 +46,9 @@ public class GlobalData {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
+    }
+
+    public static GlobalData getInstance(){
+        return globalData;
     }
 }

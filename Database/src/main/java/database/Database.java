@@ -1,8 +1,10 @@
 package database;
 
+import database.model.GlobalData;
 import database.model.RegisterParameters;
 import database.model.Role;
 import database.response.RegisterResponse;
+import database.springcontroller.DatabaseController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -53,5 +55,7 @@ public class Database {
         HttpEntity<RegisterParameters> entity = new HttpEntity<>(new RegisterParameters("http://localhost:8081"), headers);
         String url = "http://localhost:8080/register/" + Role.DATABASE;
         RegisterResponse registerResponse = restTemplate.exchange(url, HttpMethod.POST, entity, RegisterResponse.class).getBody();
+        GlobalData.getInstance().setAccessToken(registerResponse.getAccessToken());
+        GlobalData.getInstance().setMasterToken(registerResponse.getMasterToken());
     }
 }
