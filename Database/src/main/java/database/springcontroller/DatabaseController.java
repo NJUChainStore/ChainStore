@@ -17,7 +17,7 @@ public class DatabaseController {
 
     Cache cache=new Cache();
     BlockDao blockDao=new BlockDaoImpl();
-    GlobalData globalData=new GlobalData();
+    GlobalData globalData=GlobalData.getInstance();
     @ApiOperation(value = "增加区块", notes = "增加区块、加入队列")
     @RequestMapping(value = "/data", method = RequestMethod.POST)
     @ApiResponses(value = {
