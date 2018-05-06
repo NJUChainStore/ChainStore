@@ -8,9 +8,9 @@ import database.response.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class DatabaseController {
@@ -116,7 +116,11 @@ public class DatabaseController {
         DataReceivedResponse dataReceivedResponse=new DataReceivedResponse();
          dataReceivedResponse.setLatestIndex(cache.findMaxIndex());
         cache.writeAllBlocks();
-
+        if(isLatest()==true){
+            globalData.setState(State.VALID);
+        }else{
+            globalData.setState(State.INVALID);
+        }
         return new ResponseEntity<>(dataReceivedResponse,HttpStatus.OK);
     }
 
@@ -138,5 +142,13 @@ public class DatabaseController {
             globalData.setLatestBlockIndex(max);
     }
 
+    private  boolean isLatest(){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
+        String url = "http://localhost:8080/isDatabaseUpdate" ;
+        IsDatabaseUpdateResponse isDatabaseUpdateResponse = restTemplate.exchange(url, HttpMethod.POST, entity, IsDatabaseUpdateResponse.class).getBody();
+        return isDatabaseUpdateResponse.isUpdate();
+    }
 
 }
