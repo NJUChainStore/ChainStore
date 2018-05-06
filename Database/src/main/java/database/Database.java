@@ -1,7 +1,8 @@
 package database;
 
+import database.model.RegisterParameters;
 import database.model.Role;
-import database.response.Response;
+import database.response.RegisterResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -46,11 +47,11 @@ public class Database {
                 .build();
     }
 
-    private static  void sendMessage(){
-        RestTemplate restTemplate=new RestTemplate();
+    private static void sendMessage() {
+        RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        String url ="localhost:8080/register/" + Role.DATABASE+"?ip="+"localhost:8081";
-        Response response = restTemplate.exchange(url, HttpMethod.GET, entity, Response.class).getBody();
+        HttpEntity<RegisterParameters> entity = new HttpEntity<>(new RegisterParameters("http://localhost:8081"), headers);
+        String url = "http://localhost:8080/register/" + Role.DATABASE;
+        RegisterResponse registerResponse = restTemplate.exchange(url, HttpMethod.POST, entity, RegisterResponse.class).getBody();
     }
 }

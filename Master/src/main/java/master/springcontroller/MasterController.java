@@ -32,17 +32,17 @@ public class MasterController {
     }
 
     @ApiOperation(value = "注册机器", notes = "注册存储机或者挖坑机")
-    @RequestMapping(value = "/register/{role}", method = RequestMethod.GET)
+    @RequestMapping(value = "/register/{role}", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Registered", response = RegisterResponse.class),
     })
     @ResponseBody
-    public ResponseEntity<Response> register(@PathVariable("role") Role role, @RequestParam(name = "ip") String ip) {
-        return new ResponseEntity<>(masterBlService.register(role, ip), HttpStatus.ACCEPTED);
+    public ResponseEntity<Response> register(@PathVariable("role") Role role, @RequestBody RegisterParameters registerParameters) {
+        return new ResponseEntity<>(masterBlService.register(role, registerParameters.getIp()), HttpStatus.ACCEPTED);
     }
 
     @ApiOperation(value = "发送者发送结束", notes = "发送者发送结束，改发送者状态为可用")
-    @RequestMapping(value = "/sendComplete", method = RequestMethod.GET)
+    @RequestMapping(value = "/sendComplete", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = SendCompleteReceivedResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
@@ -53,7 +53,7 @@ public class MasterController {
     }
 
     @ApiOperation(value = "接受者接受结束", notes = "接受者接受结束，改接受者状态为可用")
-    @RequestMapping(value = "/receivedComplete", method = RequestMethod.GET)
+    @RequestMapping(value = "/receivedComplete", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = ReceiveCompleteReceivedResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
@@ -64,7 +64,7 @@ public class MasterController {
     }
 
     @ApiOperation(value = "矿机挖出矿", notes = "矿机挖出矿，广播给存储机")
-    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = FindBlockInfoResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
@@ -81,7 +81,7 @@ public class MasterController {
     }
 
     @ApiOperation(value = "用户保存信息", notes = "用户保存信息，存入缓冲区")
-    @RequestMapping(value = "/saveInfo", method = RequestMethod.GET)
+    @RequestMapping(value = "/saveInfo", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = SaveInfoResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
@@ -92,7 +92,7 @@ public class MasterController {
     }
 
     @ApiOperation(value = "数据机查看自己是否是最新版", notes = "数据机查看自己是否是最新版")
-    @RequestMapping(value = "/isDatabaseUpdate", method = RequestMethod.GET)
+    @RequestMapping(value = "/isDatabaseUpdate", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = IsDatabaseUpdateResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
