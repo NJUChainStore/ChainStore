@@ -15,7 +15,7 @@ public class RequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (TokenManager.registered()) {
-            String header = request.getHeader("Authentication");
+            String header = request.getHeader("authentication");
             if (!header.equals(TokenManager.masterToken)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
             }

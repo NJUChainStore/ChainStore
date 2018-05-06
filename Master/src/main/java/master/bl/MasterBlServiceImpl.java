@@ -160,8 +160,8 @@ public class MasterBlServiceImpl implements MasterBlService {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-        String mineUrl = TableManager.table.getMiner().getIp();
+        headers.add("Authentication", TableManager.table.getMiner().getMasterToken());
+        String mineUrl = TableManager.table.getMiner().getIp() + "/mine";
         HttpEntity<MineParameter> entity = new HttpEntity<>(new MineParameter(TableManager.table.getPreviousHash(), MasterConfig.DIFFICULTY, BufferManager.l2Buffer.getInfos()), headers);
         MineCompleteResponse mineCompleteResponseResponseEntity = restTemplate.exchange(mineUrl, HttpMethod.POST, entity, MineCompleteResponse.class).getBody();
         BufferManager.l2Buffer.clear();
