@@ -11,19 +11,19 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public Block readBlock(int num) {
-        Block block=new Block();
+        Block block = new Block();
         block.setIndex(num);
         try {
-            File file= ResourceUtils.getFile("classpath:file/"+num+".txt");
+            File file = ResourceUtils.getFile("classpath:file/" + num + ".txt");
 
-            BufferedReader br=new BufferedReader(new FileReader(file));
+            BufferedReader br = new BufferedReader(new FileReader(file));
             block.setHash(br.readLine());
             block.setPreviousHash(br.readLine());
-            block.setNounce(Integer.parseInt(br.readLine()));
+            block.setNonce(Integer.parseInt(br.readLine()));
             block.setTimestamp(Long.parseLong(br.readLine()));
-            String content="";
-            ArrayList<String> data=new ArrayList<String>();
-            while((content=br.readLine())!=null){
+            String content = "";
+            ArrayList<String> data = new ArrayList<String>();
+            while ((content = br.readLine()) != null) {
 
                 data.add(content);
 
@@ -43,30 +43,30 @@ public class FileDaoImpl implements FileDao {
 
     @Override
     public boolean writeBlock(Block block) {
-        String fileName=""+block.getIndex();
+        String fileName = "" + block.getIndex();
         try {
 
-            File nav= ResourceUtils.getFile("classpath:file/navigation");
-            String path=nav.getAbsolutePath();
-            path=path.replace("\\","/");
-            int index=path.lastIndexOf("/");
-            path=path.substring(0,index);
-            File file0=new File(path+"/"+fileName+".txt");
-            if(!file0.exists()){
+            File nav = ResourceUtils.getFile("classpath:file/navigation");
+            String path = nav.getAbsolutePath();
+            path = path.replace("\\", "/");
+            int index = path.lastIndexOf("/");
+            path = path.substring(0, index);
+            File file0 = new File(path + "/" + fileName + ".txt");
+            if (!file0.exists()) {
 
                 file0.createNewFile();
             }
-            File file= ResourceUtils.getFile(path+"/"+fileName+".txt");
+            File file = ResourceUtils.getFile(path + "/" + fileName + ".txt");
 
-            FileWriter writer=new FileWriter(file,false);
+            FileWriter writer = new FileWriter(file, false);
             /**
              * 注意写入的顺序。读的时候要按这个顺序读。
              */
-            writer.write(block.getHash()+"\n");
-            writer.write(block.getPreviousHash()+"\n");
-            writer.write(block.getNounce()+"\n");
-            writer.write(block.getTimestamp()+"\n");
-            for(String tuple:block.getBase64Data()) {
+            writer.write(block.getHash() + "\n");
+            writer.write(block.getPreviousHash() + "\n");
+            writer.write(block.getNonce() + "\n");
+            writer.write(block.getTimestamp() + "\n");
+            for (String tuple : block.getBase64Data()) {
                 writer.write(tuple + "\n");
             }
             writer.flush();

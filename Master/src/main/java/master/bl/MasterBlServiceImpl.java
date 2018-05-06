@@ -169,8 +169,13 @@ public class MasterBlServiceImpl implements MasterBlService {
 
         for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {
             if (isToBroadcast(databaseItem)) {
-                HttpEntity<Block> blockHttpEntity = new HttpEntity<>(new Block(mineCompleteResponseResponseEntity.getPreviousHash(), mineCompleteResponseResponseEntity.getDifficulty(), mineCompleteResponseResponseEntity.getBase64Data(), mineCompleteResponseResponseEntity.getNonce(), mineCompleteResponseResponseEntity.getHash(), mineCompleteResponseResponseEntity.getTimestamp()), headers);
-                BlockAddedResponse blockAddedResponse = restTemplate.exchange(databaseItem.getIp(), HttpMethod.POST, entity, BlockAddedResponse.class).getBody();
+                headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                headers.add("Authentication", databaseItem.getMasterToken());
+                String databaseUrl = databaseItem.getIp() + "/data";
+                HttpEntity<Block> blockHttpEntity = new HttpEntity<>(new Block(TableManager.table.getNowBlockIndex() - 1, mineCompleteResponseResponseEntity.getPreviousHash(), mineCompleteResponseResponseEntity.getHash(), mineCompleteResponseResponseEntity.getTimestamp(), mineCompleteResponseResponseEntity.getNonce(), mineCompleteResponseResponseEntity.getDifficulty(), mineCompleteResponseResponseEntity.getBase64Data()), headers);
+                BlockAddedResponse blockAddedResponse = restTemplate.exchange(databaseUrl, HttpMethod.POST, blockHttpEntity, BlockAddedResponse.class).getBody();
+                TableManager.table.setPreviousHash(mineCompleteResponseResponseEntity.getHash());
             }
         }
     }
