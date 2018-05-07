@@ -32,6 +32,33 @@
             </li>
         </ol>
     </div>
+    <div>
+        <h2>增加信息</h2>
+        <p>请输入信息内容</p>
+        <textarea v-model="addInformationSection.input" title="信息内容">
+        </textarea>
+        <p>输入token</p>
+        <input v-model="addInformationSection.token" title="token"/>
+        <button v-on:click="addInformation">增加信息</button>
+        <p v-if="addInformationSection.result.error" style="color: red">{{ addInformationSection.result.error }}</p>
+        <p v-if="addInformationSection.result.info">
+            内容已经加入链。{{ addInformationSection.result.info }}
+        </p>
+    </div>
+    <div>
+        <h2>查找内容</h2>
+        <p>区块编号</p>
+        <input v-model="searchSection.blockIndex" type="number" title="区块编号"/>
+        <p>偏移</p>
+        <input v-model="searchSection.offset" type="number" title="偏移"/>
+        <p>token</p>
+        <input v-model="searchSection.token" title="token"/>
+        <button v-on:click="search">搜索</button>
+        <p v-if="searchSection.result.error" style="color: red">{{ searchSection.result.error }}</p>
+        <p v-if="searchSection.result.info !== null">
+            内容：{{ searchSection.result.info }}
+        </p>
+    </div>
 </div>
 <script>
     var app = new Vue({
@@ -44,7 +71,7 @@
                 fetch("/admin/project", {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json"
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({projectName: this.projectName})
                 })
@@ -76,6 +103,51 @@
                     .then(function (data) {
                         _this.list = data.list;
                     });
+            },
+            addInformation: function () {
+                this.addInformationSection.info = "增加中";
+                this.addInformationSection.error = null;
+                var _this = this;
+                fetch("/data", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        info: this.addInformationSection.input,
+                        token: this.addInformationSection.token
+                    })
+                }).then(function (res) {
+                    if (res.ok) {
+                        res.json().then(function (data) {
+                            _this.addInformationSection.info = data;
+                            _this.addInformationSection.error = null;
+                            _this.refreshAllProjects();
+                        });
+                    } else {
+                        _this.addInformationSection.info = null;
+                        _this.addInformationSection.error = res.status;
+                    }
+                })
+            },
+            search: function () {
+                this.searchSection.info = "查询中";
+                this.searchSection.error = null;
+                var _this = this;
+                fetch("/data" +
+                    "?blockIndex=" + this.searchSection.blockIndex +
+                    "&offset=" + this.searchSection.offset +
+                    "&token=" + this.searchSection.token).then(function (res) {
+                    if (res.ok) {
+                        res.json().then(function (data) {
+                            _this.searchSection.info = data;
+                            _this.searchSection.error = null;
+                        });
+                    } else {
+                        _this.searchSection.info = null;
+                        _this.searchSection.error = res.status;
+                    }
+                })
             }
         },
         created: function () {
@@ -85,7 +157,24 @@
             previouslyAdded: null,
             projectName: '',
             error: "",
-            list: []
+            list: [],
+            addInformationSection: {
+                input: "",
+                token: "",
+                result: {
+                    error: null,
+                    info: null
+                }
+            },
+            searchSection: {
+                blockIndex: "",
+                offset: "",
+                token: "",
+                result: {
+                    error: null,
+                    info: null
+                }
+            }
         }
     });
 </script>
