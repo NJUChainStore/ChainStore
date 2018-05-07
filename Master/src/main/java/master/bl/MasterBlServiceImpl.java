@@ -85,7 +85,7 @@ public class MasterBlServiceImpl implements MasterBlService {
      * @return
      */
     @Override
-    public FindBlockInfoResponse findBlockInfo(int blockIndex, int blockOffset) throws NoAvailableDatabaseException {
+    public FindBlockInfoResponse findBlockInfo(long blockIndex, int blockOffset) throws NoAvailableDatabaseException {
         if (blockIndex == TableManager.table.getNowBlockIndex()) {
             return new FindBlockInfoResponse(BufferManager.buffer.getInfo(blockOffset));
         } else {

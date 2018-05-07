@@ -7,5 +7,5 @@ import webservice.vo.InformationAddResponseVo
 interface DataDataService {
     fun addInformation(info: String): InformationAddResponseVo
 
-    fun findInformation(blockIndex: Long, offset: Int): DataQueryVo
+    fun findInformation(blockIndex: Long, offset: Int): DataQueryVo?
 }

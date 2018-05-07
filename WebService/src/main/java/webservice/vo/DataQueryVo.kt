@@ -1,5 +1,3 @@
 package webservice.vo
 
-class DataQueryVo {
-    lateinit var info: String
-}
+class DataQueryVo(val info: String)

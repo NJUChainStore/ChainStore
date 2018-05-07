@@ -37,7 +37,7 @@ public interface MasterBlService {
      * @param blockOffset
      * @return
      */
-    FindBlockInfoResponse findBlockInfo(int blockIndex, int blockOffset) throws NoAvailableDatabaseException;
+    FindBlockInfoResponse findBlockInfo(long blockIndex, int blockOffset) throws NoAvailableDatabaseException;
 
     /**
      * save the info

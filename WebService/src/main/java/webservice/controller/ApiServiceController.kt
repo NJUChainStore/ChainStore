@@ -55,6 +55,7 @@ constructor(private val projectDataService: ProjectDataService, private val data
                 ?: return ResponseEntity(WrongResponse(403, "Token not valid"), HttpStatus.FORBIDDEN)
 
         val res = dataDataService.findInformation(blockIndex, offset)
+                ?: return ResponseEntity(WrongResponse(404,"Not Found"), HttpStatus.NOT_FOUND)
         return ResponseEntity(DataGetResponse(res.info), HttpStatus.OK)
     }
 }

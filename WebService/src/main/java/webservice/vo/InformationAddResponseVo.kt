@@ -1,6 +1,3 @@
 package webservice.vo
 
-class InformationAddResponseVo {
-    var blockIndex: Long = 0
-    var offset: Int = 0
-}
+class InformationAddResponseVo(val blockIndex: Long, val offset: Int)
