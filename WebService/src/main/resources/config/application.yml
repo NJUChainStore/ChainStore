@@ -1,0 +1,9 @@
+server:
+  port: 8070
+logging:
+  level:
+    org.springframework:
+      data: DEBUG
+      security: DEBUG
+
+masterAddress: "http://localhost:8080"
