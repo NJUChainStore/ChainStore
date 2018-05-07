@@ -14,7 +14,7 @@ public class FileDaoImpl implements FileDao {
         Block block = new Block();
         block.setIndex(num);
         try {
-            File file = ResourceUtils.getFile("classpath:file/" + num + ".txt");
+            File file = ResourceUtils.getFile("classpath:File/" + num + ".txt");
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             block.setHash(br.readLine());
@@ -46,7 +46,7 @@ public class FileDaoImpl implements FileDao {
         String fileName = "" + block.getIndex();
         try {
 
-            File nav = ResourceUtils.getFile("classpath:file/navigation");
+            File nav = ResourceUtils.getFile("classpath:File/navigation");
             String path = nav.getAbsolutePath();
             path = path.replace("\\", "/");
             int index = path.lastIndexOf("/");
