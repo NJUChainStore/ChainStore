@@ -26,9 +26,9 @@ public class MinerController {
     @ResponseBody
     public ResponseEntity<Response> mine(@RequestBody MineParameter mineParameter) {
 
-        String hash = "";
         long timestamp = System.currentTimeMillis();
         int nonce = 0;
+        String hash = calculateHash(mineParameter.getPreviousHash(), timestamp, nonce, mineParameter.getBase64Data());
 
         String target = new String(new char[mineParameter.getDifficulty()]).replace('\0', '0'); //创建一个用 difficulty * "0" 组成的字符串
         while (!hash.substring(0, mineParameter.getDifficulty()).equals(target)) {

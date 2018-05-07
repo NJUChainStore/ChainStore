@@ -9,11 +9,12 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class BlockDaoImpl implements BlockDao {
-    FileDao fileDao=new FileDaoImpl();
+    FileDao fileDao = new FileDaoImpl();
+
     @Override
     public String getSingleRecord(int blockNum, int recordNum) {
-        Block block=fileDao.readBlock(blockNum);
-        String res=block.getBase64Data().get(recordNum);
+        Block block = fileDao.readBlock(blockNum);
+        String res = block.getBase64Data().get(recordNum);
         return res;
     }
 
@@ -29,27 +30,26 @@ public class BlockDaoImpl implements BlockDao {
 
     @Override
     public void pushAllBlocks(ArrayList<Block> blocks) {
-         for(Block block:blocks){
-             pushSingleBlock(block);
-         }
+        for (Block block : blocks) {
+            pushSingleBlock(block);
+        }
     }
 
     @Override
     public int check(int maxValue) {
-        for(int i=0;i<=maxValue;i++){
-            Block tempBlock=fileDao.readBlock(i);
-            if (calculateHash(tempBlock.getPreviousHash(), tempBlock.getTimestamp(), tempBlock.getNounce(), tempBlock.getBase64Data()).equals(tempBlock.getHash())) {
-            //数据正确
-                if(i<maxValue){
-                    if(tempBlock.getHash().equals(fileDao.readBlock(i+1).getPreviousHash())){
+        for (int i = 0; i <= maxValue; i++) {
+            Block tempBlock = fileDao.readBlock(i);
+            if (calculateHash(tempBlock.getPreviousHash(), tempBlock.getTimestamp(), tempBlock.getNonce(), tempBlock.getBase64Data()).equals(tempBlock.getHash())) {
+                //数据正确
+                if (i < maxValue) {
+                    if (tempBlock.getHash().equals(fileDao.readBlock(i + 1).getPreviousHash())) {
                         //数据正确
-                    }
-                    else{
+                    } else {
                         return i;
                         //数据不正确，返回从哪一块开始错的。
                     }
                 }
-            }else{
+            } else {
                 return i;
                 //数据不正确，返回从哪一块开始错的。
             }

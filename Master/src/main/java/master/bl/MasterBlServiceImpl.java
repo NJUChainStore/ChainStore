@@ -140,11 +140,12 @@ public class MasterBlServiceImpl implements MasterBlService {
 
     private String findInfoFromDatabase(int blockIndex, int blockOffset) throws NoAvailableDatabaseException {
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
         for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {
             if (databaseItem.getState() == DatabaseState.Available) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                headers.add("Authentication", databaseItem.getMasterToken());
                 HttpEntity<String> entity = new HttpEntity<>(null, headers);
                 String url = databaseItem.getIp() + "/" + blockIndex + "/" + blockOffset;
                 BlockFoundResponse blockFoundResponse = restTemplate.exchange(url, HttpMethod.GET, entity, BlockFoundResponse.class).getBody();
@@ -159,8 +160,8 @@ public class MasterBlServiceImpl implements MasterBlService {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
-        String mineUrl = TableManager.table.getMiner().getIp();
+        headers.add("Authentication", TableManager.table.getMiner().getMasterToken());
+        String mineUrl = TableManager.table.getMiner().getIp() + "/mine";
         HttpEntity<MineParameter> entity = new HttpEntity<>(new MineParameter(TableManager.table.getPreviousHash(), MasterConfig.DIFFICULTY, BufferManager.l2Buffer.getInfos()), headers);
         MineCompleteResponse mineCompleteResponseResponseEntity = restTemplate.exchange(mineUrl, HttpMethod.POST, entity, MineCompleteResponse.class).getBody();
         BufferManager.l2Buffer.clear();
@@ -168,8 +169,13 @@ public class MasterBlServiceImpl implements MasterBlService {
 
         for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {
             if (isToBroadcast(databaseItem)) {
-                HttpEntity<Block> blockHttpEntity = new HttpEntity<>(new Block(mineCompleteResponseResponseEntity.getPreviousHash(), mineCompleteResponseResponseEntity.getDifficulty(), mineCompleteResponseResponseEntity.getBase64Data(), mineCompleteResponseResponseEntity.getNonce(), mineCompleteResponseResponseEntity.getHash(), mineCompleteResponseResponseEntity.getTimestamp()), headers);
-                BlockAddedResponse blockAddedResponse = restTemplate.exchange(databaseItem.getIp(), HttpMethod.POST, entity, BlockAddedResponse.class).getBody();
+                headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                headers.add("Authentication", databaseItem.getMasterToken());
+                String databaseUrl = databaseItem.getIp() + "/data";
+                HttpEntity<Block> blockHttpEntity = new HttpEntity<>(new Block(TableManager.table.getNowBlockIndex() - 1, mineCompleteResponseResponseEntity.getPreviousHash(), mineCompleteResponseResponseEntity.getHash(), mineCompleteResponseResponseEntity.getTimestamp(), mineCompleteResponseResponseEntity.getNonce(), mineCompleteResponseResponseEntity.getDifficulty(), mineCompleteResponseResponseEntity.getBase64Data()), headers);
+                BlockAddedResponse blockAddedResponse = restTemplate.exchange(databaseUrl, HttpMethod.POST, blockHttpEntity, BlockAddedResponse.class).getBody();
+                TableManager.table.setPreviousHash(mineCompleteResponseResponseEntity.getHash());
             }
         }
     }

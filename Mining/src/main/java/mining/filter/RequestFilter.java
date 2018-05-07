@@ -1,6 +1,5 @@
 package mining.filter;
 
-import jdk.nashorn.internal.parser.Token;
 import mining.token.TokenManager;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,12 +15,12 @@ public class RequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (TokenManager.registered()) {
-            String header = request.getHeader("Authentication");
+            String header = request.getHeader("authentication");
             if (!header.equals(TokenManager.masterToken)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 
 }

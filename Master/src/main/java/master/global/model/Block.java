@@ -3,23 +3,25 @@ package master.global.model;
 import java.util.ArrayList;
 
 public class Block {
+    private long index;
     private String previousHash;
-    private int difficulty;
-    private ArrayList<String> base64Data;
-    private int nonce;
     private String hash;
     private long timestamp;
+    private int nonce;
+    private int difficulty;
+    private ArrayList<String> base64Data;
 
     public Block() {
     }
 
-    public Block(String previousHash, int difficulty, ArrayList<String> base64Data, int nonce, String hash, long timestamp) {
+    public Block(long index, String previousHash, String hash, long timestamp, int nonce, int difficulty, ArrayList<String> base64Data) {
+        this.index = index;
         this.previousHash = previousHash;
-        this.difficulty = difficulty;
-        this.base64Data = base64Data;
-        this.nonce = nonce;
         this.hash = hash;
         this.timestamp = timestamp;
+        this.nonce = nonce;
+        this.difficulty = difficulty;
+        this.base64Data = base64Data;
     }
 
     public String getPreviousHash() {
@@ -68,5 +70,13 @@ public class Block {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public long getIndex() {
+        return index;
+    }
+
+    public void setIndex(long index) {
+        this.index = index;
     }
 }

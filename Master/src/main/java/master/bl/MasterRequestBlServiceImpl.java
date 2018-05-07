@@ -27,11 +27,12 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
     @Override
     public void sendValidateRequest(DatabaseItem databaseItem, int index) {
         RestTemplate restTemplate = new RestTemplate();
+
+        String url = databaseItem.getIp() + "/validate";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
+        headers.add("Authentication", databaseItem.getMasterToken());
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        String url = databaseItem.getIp() + "/validate";
         ValidateResponse validateResponse = restTemplate.exchange(url, HttpMethod.GET, entity, ValidateResponse.class).getBody();
         if (!validateResponse.getResult()) {
             //改变存储机状态表
@@ -57,31 +58,33 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
             }
         }
 
-        askToReceive(databaseItem, senderAddress);
+        askToReceive(databaseItem, senderToken);
         DatabaseItem temp1 = databaseItems.get(index);
         temp1.setState(DatabaseState.Receiving);
         databaseItems.set(index, temp1);
 
         RestTemplate restTemplate = new RestTemplate();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
+        headers.add("Authentication", databaseItem.getMasterToken());
         HttpEntity<SendStartInfo> entity = new HttpEntity<>(new SendStartInfo(databaseItem.getIp()), headers);
         String url = senderAddress + "/send";
         SendStartedResponse sendStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, SendStartedResponse.class).getBody();
 
-        DatabaseItem temp2 = databaseItems.get(index);
+        DatabaseItem temp2 = databaseItems.get(senderIndex);
         temp2.setState(DatabaseState.Sending);
-        databaseItems.set(index, temp2);
+        databaseItems.set(senderIndex, temp2);
 
         TableManager.table.setDatabases(databaseItems);
     }
 
     void askToReceive(DatabaseItem databaseItem, String senderToken) {
         RestTemplate restTemplate = new RestTemplate();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-
+        headers.add("Authentication", databaseItem.getMasterToken());
         HttpEntity<ReceiveStartInfo> entity = new HttpEntity<>(new ReceiveStartInfo(senderToken), headers);
         String url = databaseItem.getIp() + "/receive";
         ReceiveStartedResponse receiveStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, ReceiveStartedResponse.class).getBody();

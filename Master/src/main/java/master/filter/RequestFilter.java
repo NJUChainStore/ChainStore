@@ -22,7 +22,7 @@ public class RequestFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (!request.getRequestURI().contains(REGISTER_URL) && !request.getRequestURI().contains(SAVEINFO_URL)) {
-            String auth = request.getHeader("Authentication");
+            String auth = request.getHeader("authentication");
             if (TableManager.table.getDatabases().stream().anyMatch(x -> x.getAccessToken().equals(auth))) {
                 RequestContextHolder.currentRequestAttributes().setAttribute("Role", 1, RequestAttributes.SCOPE_REQUEST);
             } else {
