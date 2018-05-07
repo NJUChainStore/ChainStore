@@ -9,11 +9,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import webservice.dataservice.DataDataService
 import webservice.dataservice.ProjectDataService
-import webservice.vo.InformationAddVo
 import webservice.response.Response
 import webservice.response.WrongResponse
 import webservice.response.api.DataGetResponse
 import webservice.response.api.InfoAddCompleteResponse
+import webservice.vo.InformationAddVo
 
 @RestController
 class ApiServiceController
@@ -36,8 +36,11 @@ constructor(private val projectDataService: ProjectDataService, private val data
         projectDataService.updateProject(project)
 
         val addRes = dataDataService.addInformation(info.info)
-
-        return ResponseEntity(InfoAddCompleteResponse(addRes.blockIndex, addRes.offset), HttpStatus.OK)
+        if (addRes != null) {
+            return ResponseEntity(InfoAddCompleteResponse(addRes.blockIndex, addRes.offset), HttpStatus.OK)
+        } else {
+            return ResponseEntity(WrongResponse(10002, "fail to add"), HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @ApiOperation(value = "查找信息", notes = "查找信息")
@@ -55,7 +58,7 @@ constructor(private val projectDataService: ProjectDataService, private val data
                 ?: return ResponseEntity(WrongResponse(403, "Token not valid"), HttpStatus.FORBIDDEN)
 
         val res = dataDataService.findInformation(blockIndex, offset)
-                ?: return ResponseEntity(WrongResponse(404,"Not Found"), HttpStatus.NOT_FOUND)
+                ?: return ResponseEntity(WrongResponse(404, "Not Found"), HttpStatus.NOT_FOUND)
         return ResponseEntity(DataGetResponse(res.info), HttpStatus.OK)
     }
 }

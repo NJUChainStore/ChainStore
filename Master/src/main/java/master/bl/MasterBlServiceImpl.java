@@ -138,7 +138,7 @@ public class MasterBlServiceImpl implements MasterBlService {
         return masterToken;
     }
 
-    private String findInfoFromDatabase(int blockIndex, int blockOffset) throws NoAvailableDatabaseException {
+    private String findInfoFromDatabase(long blockIndex, int blockOffset) throws NoAvailableDatabaseException {
         RestTemplate restTemplate = new RestTemplate();
 
         for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {

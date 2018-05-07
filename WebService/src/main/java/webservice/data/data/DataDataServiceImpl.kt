@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.client.postForEntity
 import webservice.dataservice.DataDataService
 import webservice.vo.DataQueryVo
 import webservice.vo.InformationAddResponseVo
@@ -14,13 +13,13 @@ import webservice.vo.tomaster.ToMasterQueryInformationResponse
 import webservice.vo.tomaster.ToMasterQueryInformationVo
 
 @Service
-class DataDataServiceImpl : DataDataService
-{
+class DataDataServiceImpl : DataDataService {
 
-    @Value("{masterAddress}") // localhost:8080
+    @Value("\${masterAddress}") // localhost:8080
+    private
     lateinit var masterAddress: String
 
-    @Autowired
+    @Autowired private
     lateinit var restTemplate: RestTemplate
 
     override fun findInformation(blockIndex: Long, offset: Int): DataQueryVo {

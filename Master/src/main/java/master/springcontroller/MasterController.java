@@ -64,7 +64,7 @@ public class MasterController {
     }
 
     @ApiOperation(value = "查询信息", notes = "根据区块号和区块偏移查询信息")
-    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = FindBlockInfoResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
