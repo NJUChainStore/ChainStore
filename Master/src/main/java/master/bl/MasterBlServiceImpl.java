@@ -23,6 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -147,7 +148,7 @@ public class MasterBlServiceImpl implements MasterBlService {
                 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 headers.add("Authentication", databaseItem.getMasterToken());
                 HttpEntity<String> entity = new HttpEntity<>(null, headers);
-                String url = databaseItem.getIp() + "/" + blockIndex + "/" + blockOffset;
+                String url = databaseItem.getIp() + "/data" + "/" + blockIndex + "/" + blockOffset;
                 BlockFoundResponse blockFoundResponse = restTemplate.exchange(url, HttpMethod.GET, entity, BlockFoundResponse.class).getBody();
                 return blockFoundResponse.getBase64Data();
             }
@@ -162,6 +163,9 @@ public class MasterBlServiceImpl implements MasterBlService {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         headers.add("Authentication", TableManager.table.getMiner().getMasterToken());
         String mineUrl = TableManager.table.getMiner().getIp() + "/mine";
+        ArrayList<String> nowInfos = BufferManager.buffer.getInfos();
+        BufferManager.l2Buffer.setInfos(nowInfos);
+        BufferManager.buffer.clear();
         HttpEntity<MineParameter> entity = new HttpEntity<>(new MineParameter(TableManager.table.getPreviousHash(), MasterConfig.DIFFICULTY, BufferManager.l2Buffer.getInfos()), headers);
         MineCompleteResponse mineCompleteResponseResponseEntity = restTemplate.exchange(mineUrl, HttpMethod.POST, entity, MineCompleteResponse.class).getBody();
         BufferManager.l2Buffer.clear();
