@@ -85,7 +85,7 @@ public class MasterBlServiceImpl implements MasterBlService {
      * @return
      */
     @Override
-    public FindBlockInfoResponse findBlockInfo(int blockIndex, int blockOffset) throws NoAvailableDatabaseException {
+    public FindBlockInfoResponse findBlockInfo(long blockIndex, int blockOffset) throws NoAvailableDatabaseException {
         if (blockIndex == TableManager.table.getNowBlockIndex()) {
             return new FindBlockInfoResponse(BufferManager.buffer.getInfo(blockOffset));
         } else {
@@ -138,7 +138,7 @@ public class MasterBlServiceImpl implements MasterBlService {
         return masterToken;
     }
 
-    private String findInfoFromDatabase(int blockIndex, int blockOffset) throws NoAvailableDatabaseException {
+    private String findInfoFromDatabase(long blockIndex, int blockOffset) throws NoAvailableDatabaseException {
         RestTemplate restTemplate = new RestTemplate();
 
         for (DatabaseItem databaseItem : TableManager.table.getDatabases()) {

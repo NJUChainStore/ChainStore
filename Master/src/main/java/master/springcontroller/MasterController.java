@@ -63,17 +63,17 @@ public class MasterController {
         return new ResponseEntity<>(masterBlService.receiveComplete(receiveCompleteParameters.getAccessToken()), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "矿机挖出矿", notes = "矿机挖出矿，广播给存储机")
-    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "查询信息", notes = "根据区块号和区块偏移查询信息")
+    @RequestMapping(value = "/findBlockInfo", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = FindBlockInfoResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
             @ApiResponse(code = 503, message = "No available database")
     })
     @ResponseBody
-    public ResponseEntity<Response> findBlockInfo(@RequestBody FindBlockInfoParameters findBlockInfoParameters) {
+    public ResponseEntity<Response> findBlockInfo(@RequestParam("blockIndex") long blockIndex, @RequestParam("blockOffset") int blockOffset) {
         try {
-            return new ResponseEntity<>(masterBlService.findBlockInfo(findBlockInfoParameters.getBlockIndex(), findBlockInfoParameters.getBlockOffset()), HttpStatus.OK);
+            return new ResponseEntity<>(masterBlService.findBlockInfo(blockIndex, blockOffset), HttpStatus.OK);
         } catch (NoAvailableDatabaseException e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getResponse(), HttpStatus.SERVICE_UNAVAILABLE);

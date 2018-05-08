@@ -39,7 +39,7 @@ public class DatabaseController {
     }
 
     @ApiOperation(value = "查找区块", notes = "根据区块号和区块偏移查找数据")
-    @RequestMapping(value = "/data", method = RequestMethod.GET)
+    @RequestMapping(value = "/data/{blockIndex}/{offset}", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Returns the data on the block and offset", response = BlockFoundResponse.class),
             @ApiResponse(code = 403, message = "Not master"),

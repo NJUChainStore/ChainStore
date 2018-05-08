@@ -42,6 +42,11 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
             TableManager.table.setDatabases(databaseItemList);
 
             askToSend(databaseItem, index);
+        } else {
+            databaseItem.setState(DatabaseState.Available);
+            List<DatabaseItem> databaseItemList = TableManager.table.getDatabases();
+            databaseItemList.set(index, databaseItem);
+            TableManager.table.setDatabases(databaseItemList);
         }
     }
 
