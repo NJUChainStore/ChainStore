@@ -10,14 +10,14 @@ public class Cache {
     //每台机器对应的缓存，这是一个优先队列。
     private static ArrayList<Block> blocks = new ArrayList<>();
     private static BlockDao blockDao = new BlockDaoImpl();
-    public static boolean addBlock(Block block){
+    public static synchronized boolean addBlock(Block block){
         //向缓存中增加一个区块
         blocks.add(block);
         reSort();//不知道有没有重新排序的必要
         return true;
     }
 
-    public static boolean writeBlock(){
+    public static synchronized boolean writeBlock(){
         // 向存储盘中写入一个区块
         if(blocks.size()>0) {
             blockDao.pushSingleBlock(blocks.get(0));
@@ -26,14 +26,14 @@ public class Cache {
         return true;
     }
 
-    public static boolean writeAllBlocks(){
+    public static synchronized boolean writeAllBlocks(){
         //向存储盘中写入所有区块
         blockDao.pushAllBlocks(blocks);
         removeAll();
         return true;
     }
 
-    public static void removeAll(){
+    public static synchronized void removeAll(){
         // 清空缓存
         while(blocks.size()>0){
             blocks.remove(0);
@@ -44,7 +44,7 @@ public class Cache {
         //重新排序
     }
 
-    public static int findMaxIndex(){
+    public static synchronized int findMaxIndex(){
         int max=-1;
         for(Block block:blocks){
             if(block.getIndex()>max){

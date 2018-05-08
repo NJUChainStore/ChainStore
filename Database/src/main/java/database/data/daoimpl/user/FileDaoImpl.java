@@ -19,6 +19,7 @@ public class FileDaoImpl implements FileDao {
             BufferedReader br = new BufferedReader(new FileReader(file));
             block.setHash(br.readLine());
             block.setPreviousHash(br.readLine());
+
             block.setNonce(Integer.parseInt(br.readLine()));
             block.setTimestamp(Long.parseLong(br.readLine()));
             String content = "";
