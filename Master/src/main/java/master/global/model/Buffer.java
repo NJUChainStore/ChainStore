@@ -1,10 +1,12 @@
 package master.global.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Buffer {
     private static final int MAX_NUMBER = 10;
-    private ArrayList<String> infos = new ArrayList<>();
+    private List<String> infos = Collections.synchronizedList(new ArrayList<>());
 
     public void add(String info) {
         infos.add(info);
@@ -18,7 +20,7 @@ public class Buffer {
         infos = new ArrayList<>();
     }
 
-    public ArrayList<String> getInfos() {
+    public List<String> getInfos() {
         return infos;
     }
 

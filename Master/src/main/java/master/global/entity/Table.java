@@ -1,13 +1,14 @@
 package master.global.entity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Table {
     private long nowBlockIndex = 0;
     private String previousHash = "0";
     private MinerItem miner;
-    private List<DatabaseItem> databases = new ArrayList<>();
+    private List<DatabaseItem> databases = Collections.synchronizedList(new ArrayList<>());
 
     public MinerItem getMiner() {
         return miner;

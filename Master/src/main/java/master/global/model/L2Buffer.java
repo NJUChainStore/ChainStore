@@ -1,19 +1,21 @@
 package master.global.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class L2Buffer {
-    private ArrayList<String> infos = new ArrayList<>();
+    private List<String> infos = Collections.synchronizedList(new ArrayList<>());
 
     public void clear() {
         infos = new ArrayList<>();
     }
 
-    public ArrayList<String> getInfos() {
+    public List<String> getInfos() {
         return infos;
     }
 
-    public void setInfos(ArrayList<String> infos) {
+    public void setInfos(List<String> infos) {
         this.infos = infos;
     }
 }

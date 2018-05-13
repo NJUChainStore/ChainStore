@@ -33,6 +33,7 @@ repositories {
 
 dependencies {
     compile 'org.springframework:spring-core'
+    compile 'org.springframework:spring-boot-devtools'
     compile('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'com.fasterxml.jackson.core:jackson-databind'
     }
