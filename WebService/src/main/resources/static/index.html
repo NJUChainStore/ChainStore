@@ -120,13 +120,13 @@
                 }).then(function (res) {
                     if (res.ok) {
                         res.json().then(function (data) {
-                            _this.addInformationSection.info = data;
-                            _this.addInformationSection.error = null;
+                            _this.addInformationSection.result.info = data;
+                            _this.addInformationSection.result.error = null;
                             _this.refreshAllProjects();
                         });
                     } else {
-                        _this.addInformationSection.info = null;
-                        _this.addInformationSection.error = res.status;
+                        _this.addInformationSection.result.info = null;
+                        _this.addInformationSection.result.error = res.status;
                     }
                 })
             },
@@ -140,12 +140,12 @@
                     "&token=" + this.searchSection.token).then(function (res) {
                     if (res.ok) {
                         res.json().then(function (data) {
-                            _this.searchSection.info = data;
-                            _this.searchSection.error = null;
+                            _this.searchSection.result.info = data;
+                            _this.searchSection.result.error = null;
                         });
                     } else {
-                        _this.searchSection.info = null;
-                        _this.searchSection.error = res.status;
+                        _this.searchSection.result.info = null;
+                        _this.searchSection.result.error = res.status;
                     }
                 })
             }
