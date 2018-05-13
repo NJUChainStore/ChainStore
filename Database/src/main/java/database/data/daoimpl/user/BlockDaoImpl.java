@@ -73,7 +73,7 @@ public class BlockDaoImpl implements BlockDao {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             //对输入使用 sha256 算法
-            byte[] hash = digest.digest("UTF-8".getBytes(input));
+            byte[] hash = digest.digest(input.getBytes("UTF-8"));
             StringBuilder hexString = new StringBuilder();
             for (byte aHash : hash) {
                 String hex = Integer.toHexString(0xff & aHash);

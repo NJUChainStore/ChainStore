@@ -2,7 +2,7 @@ package database.model;
 
 public class GlobalData {
   private  State state=State.VALID;
-  private  int latestBlockIndex=0;
+  private  int latestBlockIndex=-1;
   //private  String myIP;
   private  String masterIP="localhost:8080";
   private  String masterToken;

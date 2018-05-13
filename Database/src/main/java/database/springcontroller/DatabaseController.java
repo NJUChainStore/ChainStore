@@ -65,7 +65,7 @@ public class DatabaseController {
         // 不成功，改自己状态为无效，并记住第一个无效块的索引
         globalData.setState(State.CHECKING);
         int res;
-        if (globalData.getLatestBlockIndex() > 0) {
+        if (globalData.getLatestBlockIndex() >= 0) {
             res = blockDao.check(globalData.getLatestBlockIndex());
         } else {
             res = -1;
