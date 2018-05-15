@@ -66,3 +66,9 @@
 .idea/modules/WebService/WebService_test.iml
 gradle/wrapper/gradle-wrapper.jar
 gradle/wrapper/gradle-wrapper.properties
+.idea/modules/Database/Database.iml
+.idea/modules/Master/Master.iml
+.idea/modules/Mining/Mining.iml
+.idea/modules/WebService/WebService.iml
+
+deploy/**

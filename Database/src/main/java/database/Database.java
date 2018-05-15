@@ -1,17 +1,9 @@
 package database;
 
 import database.config.RegisterConfig;
-import database.model.GlobalData;
-import database.model.RegisterParameters;
-import database.model.Role;
-import database.response.RegisterResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.client.RestTemplate;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
