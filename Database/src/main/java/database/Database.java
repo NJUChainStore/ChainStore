@@ -5,7 +5,6 @@ import database.model.GlobalData;
 import database.model.RegisterParameters;
 import database.model.Role;
 import database.response.RegisterResponse;
-import database.springcontroller.DatabaseController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +24,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 public class Database {
-
     public static void main(String[] args) {
         SpringApplication.run(Database.class, args);
         RegisterConfig.registerToMaster();
