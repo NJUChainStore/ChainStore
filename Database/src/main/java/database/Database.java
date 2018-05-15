@@ -1,21 +1,12 @@
 package database;
 
 import database.config.RegisterConfig;
-import database.model.GlobalData;
-import database.model.RegisterParameters;
-import database.model.Role;
-import database.response.RegisterResponse;
 import database.util.PortUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.client.RestTemplate;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -33,7 +24,7 @@ public class Database implements WebServerFactoryCustomizer<ConfigurableServletW
         SpringApplication.run(Database.class, args);
 
         RegisterConfig.registerToMaster();
-       // RegisterConfig.setLocalUrl(8081);
+        // RegisterConfig.setLocalUrl(8081);
     }
 
     @Bean
@@ -58,7 +49,7 @@ public class Database implements WebServerFactoryCustomizer<ConfigurableServletW
 
     @Override
     public void customize(ConfigurableServletWebServerFactory server) {
-        int temp=PortUtil.getRandomPort();
+        int temp = PortUtil.getRandomPort();
         server.setPort(temp);
         RegisterConfig.setLocalUrl(temp);
     }
