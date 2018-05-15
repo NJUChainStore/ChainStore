@@ -1,11 +1,8 @@
 package database;
 
 import database.config.RegisterConfig;
-import database.util.PortUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -18,13 +15,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableSwagger2
-public class Database implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
+public class Database {
 
     public static void main(String[] args) {
         SpringApplication.run(Database.class, args);
-
+        RegisterConfig.setLocalUrl();
         RegisterConfig.registerToMaster();
-        // RegisterConfig.setLocalUrl(8081);
     }
 
     @Bean
@@ -46,11 +42,4 @@ public class Database implements WebServerFactoryCustomizer<ConfigurableServletW
                 .build();
     }
 
-
-    @Override
-    public void customize(ConfigurableServletWebServerFactory server) {
-        int temp = PortUtil.getRandomPort();
-        server.setPort(temp);
-        RegisterConfig.setLocalUrl(temp);
-    }
 }

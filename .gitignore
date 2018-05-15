@@ -71,4 +71,4 @@ gradle/wrapper/gradle-wrapper.properties
 .idea/modules/Mining/Mining.iml
 .idea/modules/WebService/WebService.iml
 
-deploy/**
+deploy/*.jar
