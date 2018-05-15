@@ -38,5 +38,5 @@ spring:
           starttls:
             enable: true
             required: true
-  url:
-    server: http://localhost:8080
+url:
+  server: http://localhost:8080

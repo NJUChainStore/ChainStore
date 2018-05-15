@@ -2,6 +2,7 @@ package database.data.daoimpl.user;
 
 import database.data.dao.user.FileDao;
 import database.model.Block;
+import database.util.ResourceUtil;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -9,12 +10,14 @@ import java.util.ArrayList;
 
 public class FileDaoImpl implements FileDao {
 
+
     @Override
     public Block readBlock(int num) {
+        String tempPath=ResourceUtil.getFilePathUnderRootDirOfJarFileOrClassDir("");
         Block block = new Block();
         block.setIndex(num);
         try {
-            File file = ResourceUtils.getFile("classpath:File/" + num + ".txt");
+            File file = ResourceUtils.getFile(tempPath+"/" + num + ".txt");
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             block.setHash(br.readLine());
@@ -47,17 +50,13 @@ public class FileDaoImpl implements FileDao {
         String fileName = "" + block.getIndex();
         try {
 
-            File nav = ResourceUtils.getFile("classpath:File/navigation");
-            String path = nav.getAbsolutePath();
-            path = path.replace("\\", "/");
-            int index = path.lastIndexOf("/");
-            path = path.substring(0, index);
-            File file0 = new File(path + "/" + fileName + ".txt");
+            String tempPath=ResourceUtil.getFilePathUnderRootDirOfJarFileOrClassDir("");
+            File file0 = new File(tempPath + "/" + fileName + ".txt");
             if (!file0.exists()) {
 
                 file0.createNewFile();
             }
-            File file = ResourceUtils.getFile(path + "/" + fileName + ".txt");
+            File file = ResourceUtils.getFile(tempPath+ "/" + fileName + ".txt");
 
             FileWriter writer = new FileWriter(file, false);
             /**

@@ -31,6 +31,7 @@ public class Database implements WebServerFactoryCustomizer<ConfigurableServletW
 
     public static void main(String[] args) {
         SpringApplication.run(Database.class, args);
+
         RegisterConfig.registerToMaster();
        // RegisterConfig.setLocalUrl(8081);
     }

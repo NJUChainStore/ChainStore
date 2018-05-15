@@ -5,15 +5,19 @@ import database.model.RegisterParameters;
 import database.model.Role;
 import database.response.RegisterResponse;
 import database.util.PortUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Service
 public class RegisterConfig {
-    @Value("${url.server}")
+
     private static String masterUrl;
+
     public static String localUrl;
     public  static void registerToMaster() {
 
@@ -34,6 +38,13 @@ public class RegisterConfig {
         localUrl=local;
 
     }
+
+    @Value("${url.server}")
+    public void setMasterUrl(String l){
+        masterUrl=l;
+    }
+
+
 
 
 }
