@@ -14,11 +14,9 @@ import org.springframework.web.client.RestTemplate;
 public class RegisterConfig {
     @Value("${url.server}")
     private static String masterUrl;
-
+    public static String localUrl;
     public  static void registerToMaster() {
-        String localUrl="http://localhost:";
-        int portNum= PortUtil.getRandomPort();
-        localUrl=localUrl+Integer.toString(portNum);
+
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -28,4 +26,14 @@ public class RegisterConfig {
         GlobalData.getInstance().setAccessToken(registerResponse.getAccessToken());
         GlobalData.getInstance().setMasterToken(registerResponse.getMasterToken());
     }
+
+    public static void setLocalUrl(int portNum){
+        String local="http://localhost:";
+        //int portNum= PortUtil.getRandomPort();
+        local=local+Integer.toString(portNum);
+        localUrl=local;
+
+    }
+
+
 }
