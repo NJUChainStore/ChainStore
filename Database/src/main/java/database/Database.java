@@ -1,5 +1,6 @@
 package database;
 
+import database.config.RegisterConfig;
 import database.model.GlobalData;
 import database.model.RegisterParameters;
 import database.model.Role;
@@ -27,7 +28,7 @@ public class Database {
 
     public static void main(String[] args) {
         SpringApplication.run(Database.class, args);
-        registerToMaster();
+        RegisterConfig.registerToMaster();
     }
 
     @Bean
@@ -49,13 +50,5 @@ public class Database {
                 .build();
     }
 
-    private static void registerToMaster() {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<RegisterParameters> entity = new HttpEntity<>(new RegisterParameters("http://localhost:8081"), headers);
-        String url = "http://localhost:8080/register/" + Role.DATABASE;
-        RegisterResponse registerResponse = restTemplate.exchange(url, HttpMethod.POST, entity, RegisterResponse.class).getBody();
-        GlobalData.getInstance().setAccessToken(registerResponse.getAccessToken());
-        GlobalData.getInstance().setMasterToken(registerResponse.getMasterToken());
-    }
+
 }
