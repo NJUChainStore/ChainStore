@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>ChainStore Web Management Platform</title>
 </head>
+<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <body>
 <h1>
@@ -13,8 +16,11 @@
     <div>
         <h2>注册一个项目！</h2>
         <p>请输入项目名</p>
-        <input v-model="projectName" title="项目名"/>
-        <button v-on:click="addProject">增加项目</button>
+        <div class="col-lg-6">
+            <input type="text" class="form-control" placeholder="项目名" style="display:inline-block ;"
+                   v-model="projectName"/>
+        </div>
+        <button type="button" class="btn btn-default" v-on:click="addProject">增加项目</button>
         <p v-if="!!error" style="color: red">{{ error }}</p>
         <p v-if="previouslyAdded" style="color: green">
             恭喜！您已经成功注册了 {{ previouslyAdded.name }} 项目。<br/>
@@ -25,7 +31,7 @@
     </div>
     <div>
         <h2>现有项目</h2>
-        <button v-on:click="refreshAllProjects">刷新项目列表</button>
+        <button type="button" class="btn btn-default" v-on:click="refreshAllProjects">刷新项目列表</button>
         <ol>
             <li v-for="item in list">
                 {{ item }}
@@ -35,11 +41,16 @@
     <div>
         <h2>增加信息</h2>
         <p>请输入信息内容</p>
-        <textarea v-model="addInformationSection.input" title="信息内容">
-        </textarea>
+        <div class="col-lg-6">
+            <input type="text" class="form-control" placeholder="信息内容" style="display:inline-block ;"
+                   v-model="addInformationSection.input"/>
+        </div>
         <p>输入token</p>
-        <input v-model="addInformationSection.token" title="token"/>
-        <button v-on:click="addInformation">增加信息</button>
+        <div class="col-lg-6">
+            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
+                   v-model="addInformationSection.token"/>
+        </div>
+        <button type="button" class="btn btn-default" v-on:click="addInformation">增加信息</button>
         <p v-if="addInformationSection.result.error" style="color: red">{{ addInformationSection.result.error }}</p>
         <p v-if="addInformationSection.result.info">
             内容已经加入链。{{ addInformationSection.result.info }}
@@ -48,12 +59,21 @@
     <div>
         <h2>查找内容</h2>
         <p>区块编号</p>
-        <input v-model="searchSection.blockIndex" type="number" title="区块编号"/>
+        <div class="col-lg-6">
+            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
+                   v-model="searchSection.blockIndex" type="number" title="区块编号"/>
+        </div>
         <p>偏移</p>
-        <input v-model="searchSection.offset" type="number" title="偏移"/>
+        <div class="col-lg-6">
+            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
+                   v-model="searchSection.offset" type="number" title="偏移"/>
+        </div>
         <p>token</p>
-        <input v-model="searchSection.token" title="token"/>
-        <button v-on:click="search">搜索</button>
+        <div class="col-lg-6">
+            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
+                   v-model="searchSection.token" title="token"/>
+        </div>
+        <button type="button" class="btn btn-default" v-on:click="search">搜索</button>
         <p v-if="searchSection.result.error" style="color: red">{{ searchSection.result.error }}</p>
         <p v-if="searchSection.result.info !== null">
             内容：{{ searchSection.result.info }}
