@@ -6,6 +6,10 @@ public class ReceiveStartInfo {
     public ReceiveStartInfo() {
     }
 
+    public ReceiveStartInfo(String senderToken) {
+        this.senderToken = senderToken;
+    }
+
     public String getSenderToken() {
         return senderToken;
     }

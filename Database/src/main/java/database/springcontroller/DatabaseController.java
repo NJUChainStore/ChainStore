@@ -2,7 +2,6 @@ package database.springcontroller;
 
 import database.cache.Cache;
 import database.data.dao.user.BlockDao;
-import database.data.daoimpl.user.BlockDaoImpl;
 import database.model.*;
 import database.response.*;
 import io.swagger.annotations.ApiOperation;
@@ -15,20 +14,19 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @RestController
 public class DatabaseController {
 
     @Autowired
     BlockDao blockDao;
-    
+
     @Autowired
     Cache cache;
 
     GlobalData globalData = GlobalData.getInstance();
 
-    String tempMasterIp="";
+    String tempMasterIp = "";
 
     @Value("${url.server}")
     private static String masterUrl;
@@ -83,11 +81,11 @@ public class DatabaseController {
         if (globalData.getLatestBlockIndex() >= 0) {
             res = blockDao.check(globalData.getLatestBlockIndex());
         } else {
-            if(cache.findMaxIndex()>0){
+            if (cache.findMaxIndex() > 0) {
                 setMaxIndex();
                 cache.writeAllBlocks();
-                res=blockDao.check(globalData.getLatestBlockIndex());
-            }else{
+                res = blockDao.check(globalData.getLatestBlockIndex());
+            } else {
                 res = -1;
                 System.out.println("没有收到过任何区块！");
             }
@@ -119,13 +117,13 @@ public class DatabaseController {
     @ResponseBody
     public ResponseEntity<Response> startReceivingData(@RequestBody ReceiveStartInfo info) {
         globalData.setState(State.RECEIVING);
-        tempMasterIp=globalData.getMasterToken();
+        tempMasterIp = globalData.getMasterToken();
         globalData.setMasterToken(info.getSenderToken());
         return new ResponseEntity<>(new ReceiveStartedResponse(), HttpStatus.OK);
     }
 
     @ApiOperation(value = "接受数据", notes = "无效状态下，接受数据")
-    @RequestMapping(value = "/receive", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/receiveIt", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Data received", response = DataReceivedResponse.class),
             @ApiResponse(code = 403, message = "Not designated sender")
@@ -160,28 +158,27 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> startSendingData(@RequestBody SendStartInfo sendStartInfo) {
-        if(cache.findMaxIndex()>0) {
+        if (cache.findMaxIndex() > 0) {
             setMaxIndex();
             cache.writeAllBlocks();
         }
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("authentication", globalData.getAccessToken());
-       // HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
-        ArrayList<Block> blocks =blockDao.readBlocks(sendStartInfo.getStartIndex(),globalData.getLatestBlockIndex());
-       // blockDao.
-        String url = sendStartInfo.getReceiverAddress()+"/receive";
+        // HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
+        ArrayList<Block> blocks = blockDao.readBlocks(sendStartInfo.getStartIndex(), globalData.getLatestBlockIndex());
+        // blockDao.
+        String url = sendStartInfo.getReceiverAddress() + "/receiveIt";
         HttpEntity<ArrayList<Block>> entity = new HttpEntity<>(blocks, headers);
         DataReceivedResponse response = restTemplate.postForEntity(url, entity, DataReceivedResponse.class).getBody();
 
         // notify master
-        restTemplate.postForEntity(masterUrl+"sendComplete",
+        restTemplate.postForEntity(masterUrl + "sendComplete",
                 new HttpEntity<>(new SendCompleteParameters(globalData.getAccessToken()), headers)
-        , Object.class);
+                , Object.class);
 
 
-
-        if(cache.findMaxIndex()>0) {
+        if (cache.findMaxIndex() > 0) {
             setMaxIndex();
             cache.writeAllBlocks();
         }
@@ -199,7 +196,7 @@ public class DatabaseController {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
-        String url = masterUrl+"/isDatabaseUpdate";
+        String url = masterUrl + "/isDatabaseUpdate";
         IsDatabaseUpdateResponse isDatabaseUpdateResponse = restTemplate.exchange(url, HttpMethod.POST, entity, IsDatabaseUpdateResponse.class).getBody();
         return isDatabaseUpdateResponse.isUpdate();
     }
