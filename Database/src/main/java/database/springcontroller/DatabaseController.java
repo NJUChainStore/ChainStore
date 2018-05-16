@@ -166,7 +166,7 @@ public class DatabaseController {
         }
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", globalData.getAccessToken());
+        headers.add("authentication", globalData.getAccessToken());
        // HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
         ArrayList<Block> blocks =blockDao.readBlocks(sendStartInfo.getStartIndex(),globalData.getLatestBlockIndex());
        // blockDao.
