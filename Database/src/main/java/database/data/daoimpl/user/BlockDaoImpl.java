@@ -3,13 +3,22 @@ package database.data.daoimpl.user;
 import database.data.dao.user.BlockDao;
 import database.data.dao.user.FileDao;
 import database.model.Block;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
+@Service
 public class BlockDaoImpl implements BlockDao {
-    FileDao fileDao = new FileDaoImpl();
+
+    final FileDao fileDao;
+
+    @Autowired
+    public BlockDaoImpl(FileDao fileDao) {
+        this.fileDao = fileDao;
+    }
 
     @Override
     public String getSingleRecord(int blockNum, int recordNum) {

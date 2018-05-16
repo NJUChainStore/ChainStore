@@ -31,13 +31,9 @@ public class RegisterConfig {
     @Autowired
     public RegisterConfig(Environment environment) {
         this.environment = environment;
-    }
-
-    @PostConstruct
-    public void postConstruct() {
         String port = environment.getProperty("server.port");
         localUrl = "http://localhost:" + port;
-
+        this.serverPort = Integer.parseInt(port);
     }
 
     public void registerToMaster() {

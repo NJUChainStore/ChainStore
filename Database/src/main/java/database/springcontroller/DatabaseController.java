@@ -8,6 +8,7 @@ import database.response.*;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,11 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class DatabaseController {
 
-    BlockDao blockDao = new BlockDaoImpl();
+    @Autowired
+    BlockDao blockDao;
+    
+    @Autowired
+    Cache cache;
 
     GlobalData globalData = GlobalData.getInstance();
 
@@ -32,10 +37,10 @@ public class DatabaseController {
     @ResponseBody
     public ResponseEntity<Response> addData(@RequestBody Block block) {
 
-        Cache.addBlock(block);
+        cache.addBlock(block);
         if (globalData.getState() == State.VALID) {
             setMaxIndex();
-            Cache.writeAllBlocks();
+            cache.writeAllBlocks();
         }
         BlockAddedResponse blockAddedResponse = new BlockAddedResponse();
         blockAddedResponse.setBlockIndex(globalData.getLatestBlockIndex());
@@ -84,7 +89,7 @@ public class DatabaseController {
         } else {
             validateResponse.setResult(false);
             //清空缓存
-            Cache.removeAll();
+            cache.removeAll();
             validateResponse.setStartingInvalidBlockIndex(res);
             globalData.setState(State.INVALID);
         }
@@ -117,12 +122,12 @@ public class DatabaseController {
         // 再在返回response之前，通知主机自己接受数据完毕
         //cache.removeAll();
         for (Block block : blocks) {
-            Cache.addBlock(block);
+            cache.addBlock(block);
         }
         setMaxIndex();
         DataReceivedResponse dataReceivedResponse = new DataReceivedResponse();
-        dataReceivedResponse.setLatestIndex(Cache.findMaxIndex());
-        Cache.writeAllBlocks();
+        dataReceivedResponse.setLatestIndex(cache.findMaxIndex());
+        cache.writeAllBlocks();
         if (isLatest() == true) {
             globalData.setState(State.VALID);
         } else {
@@ -145,7 +150,7 @@ public class DatabaseController {
 
     private void setMaxIndex() {
         int max = -1;
-        max = Cache.findMaxIndex();
+        max = cache.findMaxIndex();
         if (max != -1)
             globalData.setLatestBlockIndex(max);
     }

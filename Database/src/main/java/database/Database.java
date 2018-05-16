@@ -17,6 +17,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -31,11 +32,13 @@ public class Database {
 
     public static void main(String[] args) {
         SpringApplication.run(Database.class, args);
+
     }
 
     @PostConstruct
     public void postConstruct() {
         config.registerToMaster();
+        mkDirectory();
     }
 
     @Bean
@@ -55,6 +58,24 @@ public class Database {
                 .contact(new Contact("Trap x00", "https://github.com/trapx00", "445073309@qq.com"))
                 .version("1.0")
                 .build();
+    }
+
+    public  boolean mkDirectory() {
+        String path=ResourceUtil.getFilePathUnderRootDirOfJarFileOrClassDir("")+"/"+config.serverPort;
+        File file =null;
+        try {
+            file = new File(path);
+            if (!file.exists()) {
+                return file.mkdirs();
+            }
+            else{
+                return false;
+            }
+        } catch (Exception e) {
+        } finally {
+            file = null;
+        }
+        return false;
     }
 
 }

@@ -1,6 +1,8 @@
 package database.util;
 
 import database.Database;
+import database.config.RegisterConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import  java.io.File;
 import java.net.URL;
@@ -8,7 +10,9 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class ResourceUtil {
-    public static int randomPath=-1;
+    @Autowired
+    RegisterConfig config;
+
     public static URL getResource(String path) {
         return Database.class.getResource(path);
     }
@@ -28,29 +32,6 @@ public class ResourceUtil {
         return parentDir + relativePath;
 
     }
-    public  static int getRandomPath(){
-        if(randomPath>=0){
-            return randomPath;
-        }else{
-            randomPath=(int)(Math.random()*100000);
-            return randomPath;
-        }
-    }
-    public static boolean mkDirectory() {
-        String path=getFilePathUnderRootDirOfJarFileOrClassDir("")+"/"+getRandomPath();
-        File file =null;
-        try {
-            file = new File(path);
-            if (!file.exists()) {
-                return file.mkdirs();
-            }
-            else{
-                return false;
-            }
-        } catch (Exception e) {
-        } finally {
-            file = null;
-        }
-        return false;
-    }
+
+
 }

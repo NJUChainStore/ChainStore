@@ -5,11 +5,13 @@ import database.data.dao.user.FileDao;
 import database.model.Block;
 import database.util.ResourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.util.ArrayList;
 
+@Service
 public class FileDaoImpl implements FileDao {
 
     @Autowired
@@ -22,7 +24,7 @@ public class FileDaoImpl implements FileDao {
         block.setIndex(num);
         
         try {
-            File file = ResourceUtils.getFile(tempPath+"/"+ResourceUtil.randomPath+"/" + num + ".txt");
+            File file = ResourceUtils.getFile(tempPath+"/"+config.serverPort+"/" + num + ".txt");
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             block.setHash(br.readLine());
@@ -56,12 +58,12 @@ public class FileDaoImpl implements FileDao {
         try {
 
             String tempPath=ResourceUtil.getFilePathUnderRootDirOfJarFileOrClassDir("");
-            File file0 = new File(tempPath + "/"+ResourceUtil.randomPath+"/" + fileName + ".txt");
+            File file0 = new File(tempPath + "/"+config.serverPort+"/" + fileName + ".txt");
             if (!file0.exists()) {
 
                 file0.createNewFile();
             }
-            File file = ResourceUtils.getFile(tempPath+ "/"+ResourceUtil.randomPath+"/" + fileName + ".txt");
+            File file = ResourceUtils.getFile(tempPath+ "/"+config.serverPort+"/" + fileName + ".txt");
 
             FileWriter writer = new FileWriter(file, false);
             /**
