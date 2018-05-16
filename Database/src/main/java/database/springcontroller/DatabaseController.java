@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @RestController
 public class DatabaseController {
@@ -116,6 +117,7 @@ public class DatabaseController {
     @ResponseBody
     public ResponseEntity<Response> startReceivingData(@RequestBody ReceiveStartInfo info) {
         globalData.setState(State.RECEIVING);
+        globalData.setMasterIP(info.getSenderToken());
         return new ResponseEntity<>(new ReceiveStartedResponse(), HttpStatus.OK);
     }
 
@@ -160,14 +162,18 @@ public class DatabaseController {
         }
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", globalData.getAccessToken());
        // HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
         ArrayList<Block> blocks =blockDao.readBlocks(sendStartInfo.getStartIndex(),globalData.getLatestBlockIndex());
        // blockDao.
         String url = sendStartInfo.getReceiverAddress()+"/receive";
-        DataReceivedResponse response = restTemplate.postForEntity(url, blocks, DataReceivedResponse.class).getBody();
+        HttpEntity<ArrayList<Block>> entity = new HttpEntity<>(blocks, headers);
+        DataReceivedResponse response = restTemplate.postForEntity(url, entity, DataReceivedResponse.class).getBody();
 
         // notify master
-        restTemplate.postForEntity(masterUrl+"sendComplete", new SendCompleteParameters(globalData.getAccessToken()), Object.class);
+        restTemplate.postForEntity(masterUrl+"sendComplete",
+                new HttpEntity<>(new SendCompleteParameters(globalData.getAccessToken()), headers)
+        , Object.class);
 
 
 
