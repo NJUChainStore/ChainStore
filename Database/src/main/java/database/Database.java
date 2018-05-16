@@ -1,6 +1,7 @@
 package database;
 
 import database.config.RegisterConfig;
+import database.util.ResourceUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,7 @@ public class Database {
         SpringApplication.run(Database.class, args);
         RegisterConfig.setLocalUrl();
         RegisterConfig.registerToMaster();
+        ResourceUtil.mkDirectory();
     }
 
     @Bean

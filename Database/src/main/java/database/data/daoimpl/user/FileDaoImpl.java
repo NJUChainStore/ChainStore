@@ -17,7 +17,7 @@ public class FileDaoImpl implements FileDao {
         Block block = new Block();
         block.setIndex(num);
         try {
-            File file = ResourceUtils.getFile(tempPath+"/" + num + ".txt");
+            File file = ResourceUtils.getFile(tempPath+"/"+ResourceUtil.randomPath+"/" + num + ".txt");
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             block.setHash(br.readLine());
@@ -51,12 +51,12 @@ public class FileDaoImpl implements FileDao {
         try {
 
             String tempPath=ResourceUtil.getFilePathUnderRootDirOfJarFileOrClassDir("");
-            File file0 = new File(tempPath + "/" + fileName + ".txt");
+            File file0 = new File(tempPath + "/"+ResourceUtil.randomPath+"/" + fileName + ".txt");
             if (!file0.exists()) {
 
                 file0.createNewFile();
             }
-            File file = ResourceUtils.getFile(tempPath+ "/" + fileName + ".txt");
+            File file = ResourceUtils.getFile(tempPath+ "/"+ResourceUtil.randomPath+"/" + fileName + ".txt");
 
             FileWriter writer = new FileWriter(file, false);
             /**
