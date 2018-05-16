@@ -151,7 +151,7 @@ public class DatabaseController {
             @ApiResponse(code = 403, message = "Not master")
     })
     @ResponseBody
-    public ResponseEntity<Response> startSendingData(@RequestBody ReceiveStartInfo info) {
+    public ResponseEntity<Response> startSendingData(@RequestBody SendStartInfo sendStartInfo) {
 
         return null;
     }
