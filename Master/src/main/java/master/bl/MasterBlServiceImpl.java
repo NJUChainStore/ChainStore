@@ -1,6 +1,7 @@
 package master.bl;
 
 import master.blservice.MasterBlService;
+import master.blservice.MasterRequestBlService;
 import master.config.MasterConfig;
 import master.exception.NoAvailableDatabaseException;
 import master.getreponse.BlockAddedResponse;
@@ -15,6 +16,7 @@ import master.global.entity.Role;
 import master.global.model.Block;
 import master.request.MineParameter;
 import master.response.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -29,6 +31,14 @@ import java.util.UUID;
 
 @Service
 public class MasterBlServiceImpl implements MasterBlService {
+    private final MasterRequestBlService masterRequestBlService;
+
+    @Autowired
+    public MasterBlServiceImpl(MasterRequestBlService masterRequestBlService) {
+        this.masterRequestBlService = masterRequestBlService;
+    }
+
+
     /**
      * register a machine
      *
@@ -49,7 +59,9 @@ public class MasterBlServiceImpl implements MasterBlService {
             if (role.equals(Role.MINER)) {
                 TableManager.table.setMiner(new MinerItem(System.currentTimeMillis(), accessToken, masterToken, ip));
             } else {
-                TableManager.table.getDatabases().add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip));
+                DatabaseItem databaseItem = new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip);
+                TableManager.table.getDatabases().add(databaseItem);
+                masterRequestBlService.sendValidateRequest(databaseItem, TableManager.table.getDatabases().size() - 1);
             }
         }
         return new RegisterResponse(accessToken, masterToken);
