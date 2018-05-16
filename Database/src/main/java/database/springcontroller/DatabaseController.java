@@ -73,12 +73,20 @@ public class DatabaseController {
         // 验证成功，改自己状态为可用
         // 不成功，改自己状态为无效，并记住第一个无效块的索引
         globalData.setState(State.CHECKING);
+
         int res;
         if (globalData.getLatestBlockIndex() >= 0) {
             res = blockDao.check(globalData.getLatestBlockIndex());
         } else {
-            res = -1;
-            System.out.println("没有任何区块！");
+            if(cache.findMaxIndex()>0){
+                setMaxIndex();
+                cache.writeAllBlocks();
+                res=blockDao.check(globalData.getLatestBlockIndex());
+            }else{
+                res = -1;
+                System.out.println("没有收到过任何区块！");
+            }
+
         }
         ValidateResponse validateResponse = new ValidateResponse();
 

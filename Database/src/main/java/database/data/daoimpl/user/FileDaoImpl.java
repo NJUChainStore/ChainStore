@@ -43,11 +43,11 @@ public class FileDaoImpl implements FileDao {
             br.close();
         } catch (FileNotFoundException e) {
             System.out.println("File path Error");
-
-            e.printStackTrace();
+            return null;
+            //e.printStackTrace();
         } catch (IOException e) {
-
-            e.printStackTrace();
+            return null;
+           // e.printStackTrace();
         }
         return block;
     }

@@ -48,6 +48,9 @@ public class BlockDaoImpl implements BlockDao {
     public int check(int maxValue) {
         for (int i = 0; i <= maxValue; i++) {
             Block tempBlock = fileDao.readBlock(i);
+            if(tempBlock==null){
+                return i;
+            }
             if (calculateHash(tempBlock.getPreviousHash(), tempBlock.getTimestamp(), tempBlock.getNonce(), tempBlock.getBase64Data()).equals(tempBlock.getHash())) {
                 //数据正确
                 if (i < maxValue) {
