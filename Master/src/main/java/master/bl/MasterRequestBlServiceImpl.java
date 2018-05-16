@@ -43,7 +43,7 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
             databaseItemList.set(index, databaseItem);
             TableManager.table.setDatabases(databaseItemList);
 
-            askToSend(databaseItem, index);
+            askToSend(databaseItem, index, validateResponse.getStartingInvalidBlockIndex());
         } else {
             databaseItem.setState(DatabaseState.Available);
             List<DatabaseItem> databaseItemList = TableManager.table.getDatabases();
@@ -52,7 +52,7 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
         }
     }
 
-    void askToSend(DatabaseItem databaseItem, int index) {
+    void askToSend(DatabaseItem databaseItem, int index, long blockStartIndex) {
         String senderAddress = "";
         String senderToken = "";
         int senderIndex = 0;
@@ -75,7 +75,7 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         headers.add("Authentication", databaseItem.getMasterToken());
-        HttpEntity<SendStartInfo> entity = new HttpEntity<>(new SendStartInfo(databaseItem.getIp()), headers);
+        HttpEntity<SendStartInfo> entity = new HttpEntity<>(new SendStartInfo(blockStartIndex, databaseItem.getIp()), headers);
         String url = senderAddress + "/send";
         SendStartedResponse sendStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, SendStartedResponse.class).getBody();
 
