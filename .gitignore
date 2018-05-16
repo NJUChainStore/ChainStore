@@ -72,3 +72,5 @@ gradle/wrapper/gradle-wrapper.properties
 .idea/modules/WebService/WebService.iml
 
 deploy/*.jar
+deploy/*.txt
+deploy/*.db
