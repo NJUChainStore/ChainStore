@@ -6,6 +6,7 @@ public class GlobalData {
   //private  String myIP;
   private  String masterIP="localhost:8080";
   private  String masterToken;
+
   private  String accessToken;
   private static GlobalData globalData=new GlobalData();
     public State getState() {

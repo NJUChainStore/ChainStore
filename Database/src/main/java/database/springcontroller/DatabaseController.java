@@ -28,6 +28,8 @@ public class DatabaseController {
 
     GlobalData globalData = GlobalData.getInstance();
 
+    String tempMasterIp="";
+
     @Value("${url.server}")
     private static String masterUrl;
 
@@ -117,7 +119,8 @@ public class DatabaseController {
     @ResponseBody
     public ResponseEntity<Response> startReceivingData(@RequestBody ReceiveStartInfo info) {
         globalData.setState(State.RECEIVING);
-        globalData.setMasterIP(info.getSenderToken());
+        tempMasterIp=globalData.getMasterToken();
+        globalData.setMasterToken(info.getSenderToken());
         return new ResponseEntity<>(new ReceiveStartedResponse(), HttpStatus.OK);
     }
 
@@ -145,6 +148,7 @@ public class DatabaseController {
         } else {
             globalData.setState(State.INVALID);
         }
+        globalData.setMasterToken(tempMasterIp);
         return new ResponseEntity<>(dataReceivedResponse, HttpStatus.OK);
     }
 
