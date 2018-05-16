@@ -59,9 +59,7 @@ public class MasterBlServiceImpl implements MasterBlService {
             if (role.equals(Role.MINER)) {
                 TableManager.table.setMiner(new MinerItem(System.currentTimeMillis(), accessToken, masterToken, ip));
             } else {
-                DatabaseItem databaseItem = new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip);
-                TableManager.table.getDatabases().add(databaseItem);
-                masterRequestBlService.sendValidateRequest(databaseItem, TableManager.table.getDatabases().size() - 1);
+                TableManager.table.getDatabases().add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip));
             }
         }
         return new RegisterResponse(accessToken, masterToken);
