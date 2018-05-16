@@ -14,6 +14,8 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+
 @RestController
 public class DatabaseController {
 
@@ -152,8 +154,28 @@ public class DatabaseController {
     })
     @ResponseBody
     public ResponseEntity<Response> startSendingData(@RequestBody SendStartInfo sendStartInfo) {
+        if(cache.findMaxIndex()>0) {
+            setMaxIndex();
+            cache.writeAllBlocks();
+        }
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+       // HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
+        ArrayList<Block> blocks =blockDao.readBlocks(sendStartInfo.getStartIndex(),globalData.getLatestBlockIndex());
+       // blockDao.
+        String url = sendStartInfo.getReceiverAddress()+"/receive";
+        DataReceivedResponse response = restTemplate.postForEntity(url, blocks, DataReceivedResponse.class).getBody();
 
-        return null;
+        // notify master
+        restTemplate.postForEntity(masterUrl+"sendComplete", new SendCompleteParameters(globalData.getAccessToken()), Object.class);
+
+
+
+        if(cache.findMaxIndex()>0) {
+            setMaxIndex();
+            cache.writeAllBlocks();
+        }
+        return new ResponseEntity<>(new Response(), HttpStatus.OK);
     }
 
     private void setMaxIndex() {

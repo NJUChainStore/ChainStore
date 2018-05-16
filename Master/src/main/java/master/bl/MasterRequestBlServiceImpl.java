@@ -70,6 +70,11 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
         temp1.setState(DatabaseState.Receiving);
         databaseItems.set(index, temp1);
 
+        DatabaseItem temp2 = databaseItems.get(senderIndex);
+        temp2.setState(DatabaseState.Sending);
+        databaseItems.set(senderIndex, temp2);
+
+        TableManager.table.setDatabases(databaseItems);
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -79,11 +84,6 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
         String url = senderAddress + "/send";
         SendStartedResponse sendStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, SendStartedResponse.class).getBody();
 
-        DatabaseItem temp2 = databaseItems.get(senderIndex);
-        temp2.setState(DatabaseState.Sending);
-        databaseItems.set(senderIndex, temp2);
-
-        TableManager.table.setDatabases(databaseItems);
     }
 
     void askToReceive(DatabaseItem databaseItem, String senderToken) {

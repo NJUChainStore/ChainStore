@@ -20,5 +20,7 @@ public interface BlockDao {
     //校验数据正确性，返回自然数说明该块号后的数据错误。返回-1 说明全部正确。
     int  check (int maxValue);
 
+    //发
+    ArrayList<Block> readBlocks(int min,int max);
 
 }

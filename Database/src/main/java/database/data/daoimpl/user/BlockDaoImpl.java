@@ -71,6 +71,15 @@ public class BlockDaoImpl implements BlockDao {
         return -1;
     }
 
+    @Override
+    public ArrayList<Block> readBlocks(int min,int max) {
+        ArrayList<Block> bs=new ArrayList<Block>();
+        for(int i=min;i<max;i++){
+            bs.add(fileDao.readBlock(i));
+        }
+        return bs;
+    }
+
     protected String calculateHash(String previousHash, long timeStamp, int nonce, ArrayList<String> data) {
         String calculatedhash = applySha256(
                 previousHash +
