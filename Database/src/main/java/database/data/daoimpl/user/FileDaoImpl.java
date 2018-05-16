@@ -1,8 +1,10 @@
 package database.data.daoimpl.user;
 
+import database.config.RegisterConfig;
 import database.data.dao.user.FileDao;
 import database.model.Block;
 import database.util.ResourceUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -10,12 +12,15 @@ import java.util.ArrayList;
 
 public class FileDaoImpl implements FileDao {
 
+    @Autowired
+    RegisterConfig config;
 
     @Override
     public Block readBlock(int num) {
         String tempPath=ResourceUtil.getFilePathUnderRootDirOfJarFileOrClassDir("");
         Block block = new Block();
         block.setIndex(num);
+        
         try {
             File file = ResourceUtils.getFile(tempPath+"/"+ResourceUtil.randomPath+"/" + num + ".txt");
 
