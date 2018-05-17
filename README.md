@@ -1,6 +1,6 @@
 # ChainStore
 
-A distributed, Blockchain-Based Storage Solution by NJUChainStore.
+A Distributed, Blockchain-Based Storage Solution by NJUChainStore
 
 [中文](./README.cn.md)
 
@@ -12,8 +12,8 @@ JRE 8 is required.
 2. `./run.sh run` to start Master(port 8080), Miner(port 8079) and WebService(port 8070)
 3. `./database.sh run {portNum, 8081 for example}` to start a Database in specified port
 4. Start as many databases as you want. At least 2 is recommended.
-5. You are ready to use the system! Access `http://localhost:8070` for Web Management.
-6. To stop the system, execute `./database.sh stop` to stop databases and `./run.sh stop` to stop the rest components.
+5. System is ready! Access `http://localhost:8070` for Web Management.
+6. To stop the system, execute `./database.sh stop` to stop databases and `./run.sh stop` to stop the rest of the components.
 
 ## Features
 
