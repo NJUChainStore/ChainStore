@@ -18,6 +18,7 @@ public class DatabaseRequestFilter extends OncePerRequestFilter {
         GlobalData state = GlobalData.getInstance();
         String header = request.getHeader("authentication");
         if (!header.equals(state.getMasterToken())) {
+            System.out.println("token_wrong!!!masterToken"+state.getMasterToken()+"___header___:"+header);
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
