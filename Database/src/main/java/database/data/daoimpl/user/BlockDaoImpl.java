@@ -54,6 +54,9 @@ public class BlockDaoImpl implements BlockDao {
             if (calculateHash(tempBlock.getPreviousHash(), tempBlock.getTimestamp(), tempBlock.getNonce(), tempBlock.getBase64Data()).equals(tempBlock.getHash())) {
                 //数据正确
                 if (i < maxValue) {
+                    if(fileDao.readBlock(i + 1)==null){
+                        return i;
+                    }
                     if (tempBlock.getHash().equals(fileDao.readBlock(i + 1).getPreviousHash())) {
                         //数据正确
                     } else {

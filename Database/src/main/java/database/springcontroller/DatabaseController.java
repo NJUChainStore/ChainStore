@@ -190,7 +190,8 @@ public class DatabaseController {
         }
         sendComplete();
 
-        ReceiveStartedResponse receiveStartedResponse=new ReceiveStartedResponse();
+        ReceiveStartedResponse
+                receiveStartedResponse=new ReceiveStartedResponse();
         receiveStartedResponse.setHaha(tempMasterIp);
         return new ResponseEntity<>(receiveStartedResponse, HttpStatus.OK);
     }
