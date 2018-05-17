@@ -199,8 +199,10 @@ public class DatabaseController {
     private void setMaxIndex() {
         int max = -1;
         max = cache.findMaxIndex();
-        if (max != -1)
+        if (max != -1) {
             globalData.setLatestBlockIndex(max);
+            System.out.println("当前机器最大区块号："+max);
+        }
     }
 
     private boolean isLatest() {

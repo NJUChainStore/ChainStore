@@ -42,7 +42,7 @@ public class FileDaoImpl implements FileDao {
             block.setBase64Data(data);
             br.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File path Error");
+            System.out.println("当前机器数据被篡改，开始紧急备份！");
             return null;
             //e.printStackTrace();
         } catch (IOException e) {

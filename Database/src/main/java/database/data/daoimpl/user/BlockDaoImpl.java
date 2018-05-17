@@ -77,7 +77,7 @@ public class BlockDaoImpl implements BlockDao {
     @Override
     public ArrayList<Block> readBlocks(int min,int max) {
         ArrayList<Block> bs=new ArrayList<Block>();
-        for(int i=min;i<max;i++){
+        for(int i=min;i<=max;i++){
             bs.add(fileDao.readBlock(i));
         }
         return bs;
