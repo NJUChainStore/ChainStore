@@ -189,7 +189,10 @@ public class DatabaseController {
             cache.writeAllBlocks();
         }
         sendComplete();
-        return new ResponseEntity<>(new Response(), HttpStatus.OK);
+
+        ReceiveStartedResponse receiveStartedResponse=new ReceiveStartedResponse();
+        receiveStartedResponse.setHaha(tempMasterIp);
+        return new ResponseEntity<>(receiveStartedResponse, HttpStatus.OK);
     }
 
     private void setMaxIndex() {
