@@ -73,6 +73,7 @@ public class MasterBlServiceImpl implements MasterBlService {
      */
     @Override
     public SendCompleteReceivedResponse sendComplete(String id) {
+        setDatabaseState(id, DatabaseState.Available);
         return new SendCompleteReceivedResponse(setDatabaseState(id, DatabaseState.Available));
     }
 
@@ -84,6 +85,7 @@ public class MasterBlServiceImpl implements MasterBlService {
      */
     @Override
     public ReceiveCompleteReceivedResponse receiveComplete(String id) {
+        setDatabaseState(id, DatabaseState.Available);
         return new ReceiveCompleteReceivedResponse(setDatabaseState(id, DatabaseState.Available));
     }
 
