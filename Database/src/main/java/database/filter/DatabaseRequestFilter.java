@@ -19,6 +19,7 @@ public class DatabaseRequestFilter extends OncePerRequestFilter {
         String header = request.getHeader("authentication");
         if (!header.equals(state.getMasterToken())) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
         }
         filterChain.doFilter(request, response);
     }

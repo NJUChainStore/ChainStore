@@ -143,6 +143,7 @@ public class DatabaseController {
         dataReceivedResponse.setLatestIndex(cache.findMaxIndex());
         cache.writeAllBlocks();
         globalData.setMasterToken(tempMasterIp);
+        receiveComplete();
         if (isLatest() == true) {
             globalData.setState(State.VALID);
         } else {
@@ -187,7 +188,7 @@ public class DatabaseController {
             setMaxIndex();
             cache.writeAllBlocks();
         }
-       // sendComplete();
+        sendComplete();
         return new ResponseEntity<>(new Response(), HttpStatus.OK);
     }
 
@@ -215,4 +216,13 @@ private  void sendComplete(){
             new HttpEntity<>(new SendCompleteParameters(globalData.getAccessToken()), headers)
             , Object.class);
 }
+
+    private  void receiveComplete(){
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("authentication", globalData.getAccessToken());
+        restTemplate.postForEntity(masterUrl + "/receiveComplete",
+                new HttpEntity<>(new ReceiveCompleteParameters(globalData.getAccessToken()), headers)
+                , Object.class);
+    }
 }
