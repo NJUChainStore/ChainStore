@@ -79,7 +79,7 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        headers.add("Authentication", databaseItem.getMasterToken());
+        headers.add("Authentication", temp2.getMasterToken());
         HttpEntity<SendStartInfo> entity = new HttpEntity<>(new SendStartInfo(blockStartIndex, databaseItem.getIp()), headers);
         String url = senderAddress + "/send";
         SendStartedResponse sendStartedResponse = restTemplate.exchange(url, HttpMethod.POST, entity, SendStartedResponse.class).getBody();
