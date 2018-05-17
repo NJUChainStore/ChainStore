@@ -29,7 +29,7 @@ public class DatabaseController {
     String tempMasterIp = "";
 
     @Value("${url.server}")
-    private static String masterUrl;
+    private  String masterUrl;
 
     @ApiOperation(value = "增加区块", notes = "增加区块、加入队列")
     @RequestMapping(value = "/data", method = RequestMethod.POST)
@@ -134,6 +134,7 @@ public class DatabaseController {
         // 接受结束后，把缓存里的数据加入自己的链
         // 再在返回response之前，通知主机自己接受数据完毕
         //cache.removeAll();
+        System.out.println("start___receiving!!");
         for (Block block : blocks) {
             cache.addBlock(block);
         }
@@ -141,12 +142,13 @@ public class DatabaseController {
         DataReceivedResponse dataReceivedResponse = new DataReceivedResponse();
         dataReceivedResponse.setLatestIndex(cache.findMaxIndex());
         cache.writeAllBlocks();
+        globalData.setMasterToken(tempMasterIp);
         if (isLatest() == true) {
             globalData.setState(State.VALID);
         } else {
             globalData.setState(State.INVALID);
         }
-        globalData.setMasterToken(tempMasterIp);
+
         return new ResponseEntity<>(dataReceivedResponse, HttpStatus.OK);
     }
 
@@ -169,19 +171,23 @@ public class DatabaseController {
         ArrayList<Block> blocks = blockDao.readBlocks(sendStartInfo.getStartIndex(), globalData.getLatestBlockIndex());
         // blockDao.
         String url = sendStartInfo.getReceiverAddress() + "/receiveIt";
-        HttpEntity<ArrayList<Block>> entity = new HttpEntity<>(blocks, headers);
-        DataReceivedResponse response = restTemplate.postForEntity(url, entity, DataReceivedResponse.class).getBody();
 
+        System.out.println("start___sending!!");
+        System.out.println(url+"____is the target url");
+
+        HttpEntity<ArrayList<Block>> entity = new HttpEntity<>(blocks, headers);
+        //DataReceivedResponse response = restTemplate.postForEntity(url, entity, DataReceivedResponse.class).getBody();
+        restTemplate.postForEntity(url, entity, DataReceivedResponse.class);
+        System.out.println("数据向外发送成功");
         // notify master
-        restTemplate.postForEntity(masterUrl + "sendComplete",
-                new HttpEntity<>(new SendCompleteParameters(globalData.getAccessToken()), headers)
-                , Object.class);
+
 
 
         if (cache.findMaxIndex() > 0) {
             setMaxIndex();
             cache.writeAllBlocks();
         }
+       // sendComplete();
         return new ResponseEntity<>(new Response(), HttpStatus.OK);
     }
 
@@ -195,10 +201,18 @@ public class DatabaseController {
     private boolean isLatest() {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
+        headers.add("authentication", globalData.getAccessToken());
         HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
         String url = masterUrl + "/isDatabaseUpdate";
         IsDatabaseUpdateResponse isDatabaseUpdateResponse = restTemplate.exchange(url, HttpMethod.POST, entity, IsDatabaseUpdateResponse.class).getBody();
         return isDatabaseUpdateResponse.isUpdate();
     }
-
+private  void sendComplete(){
+    RestTemplate restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("authentication", globalData.getAccessToken());
+    restTemplate.postForEntity(masterUrl + "/sendComplete",
+            new HttpEntity<>(new SendCompleteParameters(globalData.getAccessToken()), headers)
+            , Object.class);
+}
 }
