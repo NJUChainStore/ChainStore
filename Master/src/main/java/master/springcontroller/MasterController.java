@@ -53,7 +53,7 @@ public class MasterController {
     }
 
     @ApiOperation(value = "接受者接受结束", notes = "接受者接受结束，改接受者状态为可用")
-    @RequestMapping(value = "/receivedComplete", method = RequestMethod.POST)
+    @RequestMapping(value = "/receiveComplete", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = ReceiveCompleteReceivedResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
