@@ -33,7 +33,7 @@ constructor(private val projectDataService: ProjectDataService)
             return ResponseEntity(WrongResponse(409, "Project already exists"), HttpStatus.CONFLICT )
         }
 
-        val newProject = ProjectPo(info.projectName)
+        val newProject = ProjectPo(info.projectName, info.isPrivate)
         projectDataService.addProject(newProject)
 
         return ResponseEntity(ProjectAddResponse(newProject.token), HttpStatus.CREATED)
@@ -50,7 +50,7 @@ constructor(private val projectDataService: ProjectDataService)
     fun getAllProjects(): ResponseEntity<Response>? {
 
         val list = projectDataService.filterProject { _ -> true }
-                .map { x -> ProjectQueryVo(x.id, x.name, x.token, x.infoAddedCount) }
+                .map { x -> ProjectQueryVo(x.id, x.name, x.token, x.infoAddedCount, x.isPrivate) }
                 .toList()
 
         return ResponseEntity(QueryProjectResponse(list), HttpStatus.OK)
