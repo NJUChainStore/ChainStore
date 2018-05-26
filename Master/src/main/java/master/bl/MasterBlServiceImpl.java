@@ -124,15 +124,15 @@ public class MasterBlServiceImpl implements MasterBlService {
         if (BufferManager.buffer.isFull()) {
             saveBlockToDatabase();
             for (String url : Table.masters) {
-                String mineUrl = url + "/clearBuffer";
+                String masterUrl = url + "/clearBuffer";
                 HttpEntity entity = new HttpEntity<>(null, headers);
-                BufferClearResponse bufferClearResponse = restTemplate.exchange(mineUrl, POST, entity, BufferClearResponse.class).getBody();
+                restTemplate.exchange(masterUrl, POST, entity, BufferClearResponse.class);
             }
         } else {
             for (String url : Table.masters) {
-                String mineUrl = url + "/save";
+                String masterUrl = url + "/save";
                 HttpEntity entity = new HttpEntity<>(new SaveInfoParameters(data), headers);
-                SaveInfoResponse saveInfoResponse = restTemplate.exchange(mineUrl, POST, entity, SaveInfoResponse.class).getBody();
+                restTemplate.exchange(masterUrl, POST, entity, SaveInfoResponse.class);
             }
         }
         return new SaveInfoResponse(blockIndex, blockOffset);
