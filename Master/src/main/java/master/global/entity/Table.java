@@ -9,6 +9,13 @@ public class Table {
     private String previousHash = "0";
     private MinerItem miner;
     private List<DatabaseItem> databases = Collections.synchronizedList(new ArrayList<>());
+    public static List<String> masters = new ArrayList<>();
+
+    static {
+        masters.add("http://localhost:8000");
+        masters.add("http://localhost:8001");
+        masters.add("http://localhost:8002");
+    }
 
     public MinerItem getMiner() {
         return miner;
