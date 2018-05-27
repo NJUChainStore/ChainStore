@@ -23,7 +23,7 @@ class DataDataServiceImpl : DataDataService {
 
     @Value("\${masterAddresses}") // localhost:8080
     private
-    lateinit var masterAddresses: Array<String>
+    lateinit var masterAddresses: List<String>
 
     lateinit var map: MasterMap
 

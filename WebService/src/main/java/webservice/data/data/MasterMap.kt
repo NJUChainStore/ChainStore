@@ -1,6 +1,6 @@
 package webservice.data.data
 
-class MasterMap constructor(masterAddresses: Array<String>) {
+class MasterMap constructor(masterAddresses: List<String>) {
     private val map: HashMap<String, Boolean> = HashMap()
 
     init {
