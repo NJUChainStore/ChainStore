@@ -19,7 +19,7 @@ import javax.annotation.PostConstruct
 class DataDataServiceImpl : DataDataService {
 
 
-    val SEPARATOR: String = ":):(XD"
+    private val SEPARATOR: String = ":):(XD"
 
 
     @Autowired
@@ -35,9 +35,11 @@ class DataDataServiceImpl : DataDataService {
         var url = map.selectAValid()
 
         while (url != null) {
-            val res = restTemplate
-                    .getForEntity("$url/findBlockInfo?blockIndex=$blockIndex&blockOffset=$offset", ToMasterQueryInformationResponse::class.java)
-            if (res.statusCode.is2xxSuccessful) {
+            try {
+                val res = restTemplate
+                        .getForEntity("$url/findBlockInfo?blockIndex=$blockIndex&blockOffset=$offset", ToMasterQueryInformationResponse::class.java)
+
+
                 val resData = res.body.data
                 val i = resData.lastIndexOf(SEPARATOR)
 
@@ -50,7 +52,9 @@ class DataDataServiceImpl : DataDataService {
                 }
 
                 return DataQueryVo(data)
-            } else {
+            } catch (e: PrivateDataViolationException) {
+                throw e
+            } catch (e: Exception) {
                 map.invalidate(url)
                 url = map.selectAValid()
             }
@@ -67,12 +71,12 @@ class DataDataServiceImpl : DataDataService {
 
         var url = map.selectAValid()
         while (url != null) {
-            val res = restTemplate
-                    .postForEntity("$url/saveInfo", info, ToMasterAddInformationResponse::class.java)
-            if (res.statusCode.is2xxSuccessful) {
+            try {
+                val res = restTemplate
+                        .postForEntity("$url/saveInfo", info, ToMasterAddInformationResponse::class.java)
                 val resData = res.body ?: return null
                 return InformationAddResponseVo(resData.blockIndex, resData.blockOffset.toInt())
-            } else {
+            } catch (e: Exception) {
                 map.invalidate(url)
                 url = map.selectAValid()
             }
