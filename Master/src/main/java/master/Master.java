@@ -1,6 +1,9 @@
 package master;
 
+import master.config.MasterConfig;
+import master.global.TableManager;
 import master.threads.ThreadStarter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -14,14 +17,28 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.annotation.PostConstruct;
+
 @EnableAsync
 @SpringBootApplication
 @EnableSwagger2
 public class Master {
 
+    private final MasterConfig masterConfig;
+
+    @Autowired
+    public Master(MasterConfig masterConfig) {
+        this.masterConfig = masterConfig;
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(Master.class, args);
         new ThreadStarter().runMasterThreads();
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        TableManager.localUrl = masterConfig.getLocalUrl();
     }
 
 

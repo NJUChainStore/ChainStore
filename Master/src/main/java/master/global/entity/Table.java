@@ -1,5 +1,6 @@
 package master.global.entity;
 
+import master.global.TableManager;
 import master.parameters.UpdateSelfParameters;
 import master.response.UpdateSelfResponse;
 import org.springframework.http.HttpEntity;
@@ -71,9 +72,14 @@ public class Table {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         for (String url : Table.masters) {
-            String masterUrl = url + "/updateTable";
-            HttpEntity entity = new HttpEntity<>(new UpdateSelfParameters(this), headers);
-            restTemplate.exchange(masterUrl, POST, entity, UpdateSelfResponse.class).getBody();
+            if (!url.equals(TableManager.localUrl)) {
+                System.out.println("*******************************");
+                System.out.println(url);
+                System.out.println("*******************************");
+                String masterUrl = url + "/updateTable";
+                HttpEntity entity = new HttpEntity<>(new UpdateSelfParameters(this), headers);
+                restTemplate.exchange(masterUrl, POST, entity, UpdateSelfResponse.class).getBody();
+            }
         }
     }
 }

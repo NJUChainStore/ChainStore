@@ -17,9 +17,7 @@ import java.util.Arrays;
 @Component
 @WebFilter(urlPatterns = {"/*"}, filterName = "accessTokenValidateFilter")
 public class RequestFilter extends OncePerRequestFilter {
-    private final static String REGISTER_URL = "/register";
-    private final static String SAVEINFO_URL = "/saveInfoAndBroadcast";
-    private final static String[] IGNORED_ROUTES = new String[]{"/register", "/saveInfoAndBroadcast", "/findBlockInfo"};
+    private final static String[] IGNORED_ROUTES = new String[]{"/register", "/saveInfo", "/findBlockInfo", "/updateTable", "/clearBuffer", "/save"};
 
 
     @Override
