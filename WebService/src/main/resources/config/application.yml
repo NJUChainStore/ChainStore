@@ -6,7 +6,7 @@ logging:
       data: DEBUG
       security: DEBUG
 
-masterAddresses:
-  - "http://localhost:8000"
-  - "http://localhost:8001"
-  - "http://localhost:8002"
+masters:
+  - http://localhost:8000
+  - http://localhost:8001
+  - http://localhost:8002

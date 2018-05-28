@@ -21,20 +21,13 @@ class DataDataServiceImpl : DataDataService {
 
     val SEPARATOR: String = ":):(XD"
 
-    @Value("\${masterAddresses}") // localhost:8080
-    private
-    lateinit var masterAddresses: List<String>
-
-    lateinit var map: MasterMap
-
-    @PostConstruct
-    fun initMasterAddressMap() {
-        map = MasterMap(masterAddresses)
-    }
 
     @Autowired
-    private
-    lateinit var restTemplate: RestTemplate
+    private lateinit var map: MasterMap
+
+
+    @Autowired
+    private lateinit var restTemplate: RestTemplate
 
     override fun findInformation(blockIndex: Long, offset: Int, accessor: String, isPrivate: Boolean): DataQueryVo {
         val info = ToMasterQueryInformationVo(blockIndex, offset)
