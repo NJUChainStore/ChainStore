@@ -1,10 +1,20 @@
 package webservice.data.data
 
-class MasterMap constructor(masterAddresses: List<String>) {
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
+import webservice.config.MasterAddressesConfig
+import javax.annotation.PostConstruct
+
+@Component
+class MasterMap {
+
+    @Autowired lateinit var masterAddressesConfig: MasterAddressesConfig
     private val map: HashMap<String, Boolean> = HashMap()
 
-    init {
-        masterAddresses.forEach { x -> map[x] = true }
+    @PostConstruct
+    fun postConstruct() {
+        println(masterAddressesConfig.masters)
+        masterAddressesConfig.masters.forEach { x -> map[x] = true }
     }
 
     fun invalidate(address: String) {
