@@ -57,9 +57,11 @@ public class MasterBlServiceImpl implements MasterBlService {
         boolean isIpExists = TableManager.table.getDatabases().stream().anyMatch(x -> x.getIp().equals(ip));
         if (!isIpExists) {
             if (role.equals(Role.MINER)) {
-                TableManager.table.setMiner(new MinerItem(System.currentTimeMillis(), accessToken, masterToken, ip));
+                TableManager.table.setMinerAndBroadcast(new MinerItem(System.currentTimeMillis(), accessToken, masterToken, ip));
             } else {
-                TableManager.table.getDatabases().add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip));
+                List<DatabaseItem> databaseItems = TableManager.table.getDatabases();
+                databaseItems.add(new DatabaseItem(System.currentTimeMillis(), masterToken, accessToken, DatabaseState.Available, new Date(), ip));
+                TableManager.table.setDatabasesAndBroadcast(databaseItems);
             }
         }
         return new RegisterResponse(accessToken, masterToken);
@@ -130,7 +132,11 @@ public class MasterBlServiceImpl implements MasterBlService {
                     System.out.println("*******************************");
                     String masterUrl = url + "/clearBuffer";
                     HttpEntity entity = new HttpEntity<>(null, headers);
-                    restTemplate.exchange(masterUrl, POST, entity, BufferClearResponse.class);
+                    try {
+                        restTemplate.exchange(masterUrl, POST, entity, BufferClearResponse.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         } else {
@@ -141,7 +147,11 @@ public class MasterBlServiceImpl implements MasterBlService {
                     System.out.println("*******************************");
                     String masterUrl = url + "/save";
                     HttpEntity entity = new HttpEntity<>(new SaveInfoParameters(data), headers);
-                    restTemplate.exchange(masterUrl, POST, entity, SaveInfoResponse.class);
+                    try {
+                        restTemplate.exchange(masterUrl, POST, entity, SaveInfoResponse.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -209,7 +219,7 @@ public class MasterBlServiceImpl implements MasterBlService {
             }
             index++;
         }
-        TableManager.table.setDatabases(databaseItems);
+        TableManager.table.setDatabasesAndBroadcast(databaseItems);
         return masterToken;
     }
 
@@ -253,7 +263,7 @@ public class MasterBlServiceImpl implements MasterBlService {
                 String databaseUrl = databaseItem.getIp() + "/data";
                 HttpEntity<Block> blockHttpEntity = new HttpEntity<>(new Block(TableManager.table.getNowBlockIndex() - 1, mineCompleteResponseResponseEntity.getPreviousHash(), mineCompleteResponseResponseEntity.getHash(), mineCompleteResponseResponseEntity.getTimestamp(), mineCompleteResponseResponseEntity.getNonce(), mineCompleteResponseResponseEntity.getDifficulty(), mineCompleteResponseResponseEntity.getBase64Data()), headers);
                 BlockAddedResponse blockAddedResponse = restTemplate.exchange(databaseUrl, POST, blockHttpEntity, BlockAddedResponse.class).getBody();
-                TableManager.table.setPreviousHash(mineCompleteResponseResponseEntity.getHash());
+                TableManager.table.setPreviousHashAndBroadcast(mineCompleteResponseResponseEntity.getHash());
             }
         }
     }

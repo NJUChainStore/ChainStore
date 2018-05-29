@@ -10,11 +10,9 @@ import io.github.lukehutch.fastclasspathscanner.FastClasspathScanner;
 import webservice.exception.DbSqlException;
 import webservice.io.IOUtil;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 
 public class BaseDatabaseFactory {
 

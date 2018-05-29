@@ -74,5 +74,6 @@ gradle/wrapper/gradle-wrapper.properties
 deploy/*.txt
 deploy/*.db
 deploy/**/*.txt
-deploy/Database-1.0-SNAPSHOT.jar
-deploy/WebService-1.0-SNAPSHOT.jar
+deploy/*.jar
+
+database.db

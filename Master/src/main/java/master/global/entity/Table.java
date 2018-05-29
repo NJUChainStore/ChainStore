@@ -33,6 +33,10 @@ public class Table {
 
     public void setMiner(MinerItem miner) {
         this.miner = miner;
+    }
+
+    public void setMinerAndBroadcast(MinerItem miner) {
+        this.miner = miner;
         broadcastSelf();
     }
 
@@ -44,11 +48,20 @@ public class Table {
         this.databases = databases;
     }
 
+    public void setDatabasesAndBroadcast(List<DatabaseItem> databases) {
+        this.databases = databases;
+        broadcastSelf();
+    }
+
     public String getPreviousHash() {
         return previousHash;
     }
 
     public void setPreviousHash(String previousHash) {
+        this.previousHash = previousHash;
+    }
+
+    public void setPreviousHashAndBroadcast(String previousHash) {
         this.previousHash = previousHash;
         broadcastSelf();
     }
@@ -59,7 +72,10 @@ public class Table {
 
     public void setNowBlockIndex(long nowBlockIndex) {
         this.nowBlockIndex = nowBlockIndex;
-        broadcastSelf();
+    }
+
+    public void updateBlockIndexWithoutRequest() {
+        nowBlockIndex++;
     }
 
     public void updateBlockIndex() {
@@ -78,7 +94,11 @@ public class Table {
                 System.out.println("*******************************");
                 String masterUrl = url + "/updateTable";
                 HttpEntity entity = new HttpEntity<>(new UpdateSelfParameters(this), headers);
-                restTemplate.exchange(masterUrl, POST, entity, UpdateSelfResponse.class).getBody();
+                try {
+                    restTemplate.exchange(masterUrl, POST, entity, UpdateSelfResponse.class).getBody();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
