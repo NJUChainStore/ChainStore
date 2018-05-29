@@ -74,3 +74,6 @@ gradle/wrapper/gradle-wrapper.properties
 deploy/*.txt
 deploy/*.db
 deploy/**/*.txt
+deploy/*.jar
+
+database.db

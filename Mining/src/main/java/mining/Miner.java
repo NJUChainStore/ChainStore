@@ -27,7 +27,7 @@ import static mining.token.TokenManager.masterToken;
 @EnableSwagger2
 public class Miner {
 
-    private final static String masterAddress = "http://localhost:8080";
+    private final static String masterAddress = "http://localhost:8000";
 
     public static void main(String[] args) {
         SpringApplication.run(Miner.class, args);

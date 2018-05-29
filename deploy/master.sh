@@ -1,7 +1,7 @@
 if [ "$1" == "run" ]; then
-java -jar "Master-1.0-SNAPSHOT.jar" --server.port=8080
+java -jar "Master-1.0-SNAPSHOT.jar" --server.port="$2"
 else if [ "$1" == "start" ]; then
-nohup java -jar "Master-1.0-SNAPSHOT.jar" --server.port=8080 >master.txt &
+nohup java -jar "Master-1.0-SNAPSHOT.jar" --server.port="$2" >master"$2".txt &
 echo "Master is starting."
 else if [ "$1" == "stop" ]; then
 PID=$(ps -ef | grep "Master-1.0-SNAPSHOT.jar" | grep -v grep | awk '{ print $2 }')

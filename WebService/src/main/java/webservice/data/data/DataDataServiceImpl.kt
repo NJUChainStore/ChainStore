@@ -5,40 +5,87 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import webservice.dataservice.DataDataService
+import webservice.exception.AllMasterDeadException
+import webservice.exception.PrivateDataViolationException
 import webservice.vo.DataQueryVo
 import webservice.vo.InformationAddResponseVo
 import webservice.vo.tomaster.ToMasterAddInformationResponse
 import webservice.vo.tomaster.ToMasterAddInformationVo
 import webservice.vo.tomaster.ToMasterQueryInformationResponse
 import webservice.vo.tomaster.ToMasterQueryInformationVo
+import javax.annotation.PostConstruct
 
 @Service
 class DataDataServiceImpl : DataDataService {
 
-    @Value("\${masterAddress}") // localhost:8080
-    private
-    lateinit var masterAddress: String
 
-    @Autowired private
-    lateinit var restTemplate: RestTemplate
+    private val SEPARATOR: String = ":):(XD"
 
-    override fun findInformation(blockIndex: Long, offset: Int): DataQueryVo {
+
+    @Autowired
+    private lateinit var map: MasterMap
+
+
+    @Autowired
+    private lateinit var restTemplate: RestTemplate
+
+    override fun findInformation(blockIndex: Long, offset: Int, accessor: String, isPrivate: Boolean): DataQueryVo {
         val info = ToMasterQueryInformationVo(blockIndex, offset)
 
-        val res = restTemplate
-                .getForEntity("$masterAddress/findBlockInfo?blockIndex=$blockIndex&blockOffset=$offset", ToMasterQueryInformationResponse::class.java)
-                .body
-        return DataQueryVo(res.data)
+        var url = map.selectAValid()
+
+        while (url != null) {
+            try {
+                val res = restTemplate
+                        .getForEntity("$url/findBlockInfo?blockIndex=$blockIndex&blockOffset=$offset", ToMasterQueryInformationResponse::class.java)
+
+
+                val resData = res.body.data
+                val i = resData.lastIndexOf(SEPARATOR)
+
+                val data = resData.substring(0, i)
+                val owner = resData.substring(i)
+
+
+                if (isPrivate && owner != accessor) {
+                    throw PrivateDataViolationException(blockIndex, offset, owner, accessor)
+                }
+
+                return DataQueryVo(data)
+            } catch (e: PrivateDataViolationException) {
+                throw e
+            } catch (e: Exception) {
+                map.invalidate(url)
+                url = map.selectAValid()
+            }
+        }
+
+        throw AllMasterDeadException()
+
+
     }
 
-    override fun addInformation(info: String): InformationAddResponseVo? {
+    override fun addInformation(info: String, projectName: String): InformationAddResponseVo? {
 
-        val info = ToMasterAddInformationVo(info)
+        val info = ToMasterAddInformationVo(info + SEPARATOR + projectName)
 
-        val res = restTemplate
-                .postForEntity("$masterAddress/saveInfo", info, ToMasterAddInformationResponse::class.java)
-                .body ?: return null
-        return InformationAddResponseVo(res.blockIndex, res.blockOffset.toInt())
+        var url = map.selectAValid()
+        while (url != null) {
+            try {
+                val res = restTemplate
+                        .postForEntity("$url/saveInfo", info, ToMasterAddInformationResponse::class.java)
+                val resData = res.body ?: return null
+                return InformationAddResponseVo(resData.blockIndex, resData.blockOffset.toInt())
+            } catch (e: Exception) {
+                map.invalidate(url)
+                url = map.selectAValid()
+            }
+
+        }
+
+        throw AllMasterDeadException()
+
+
     }
 
 }

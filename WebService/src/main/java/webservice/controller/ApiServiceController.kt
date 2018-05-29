@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import webservice.dataservice.DataDataService
 import webservice.dataservice.ProjectDataService
+import webservice.exception.AllMasterDeadException
+import webservice.exception.PrivateDataViolationException
 import webservice.response.Response
 import webservice.response.WrongResponse
 import webservice.response.api.DataGetResponse
@@ -24,7 +26,8 @@ constructor(private val projectDataService: ProjectDataService, private val data
     @RequestMapping(value = ["/data"], method = [(RequestMethod.POST)])
     @ApiResponses(value = [
         (ApiResponse(code = 200, message = "成功为此项目增加一条记录。返回信息所在区块编号和区块内偏移。", response = InfoAddCompleteResponse::class)),
-        (ApiResponse(code = 403, message = "Token not valid"))
+        (ApiResponse(code = 403, message = "Token not valid")),
+        (ApiResponse(code = 503, message = "All masters are dead."))
     ])
     @ResponseBody
     fun add(@RequestBody info: InformationAddVo): ResponseEntity<Response>? {
@@ -35,30 +38,46 @@ constructor(private val projectDataService: ProjectDataService, private val data
         project.infoAddedCount++
         projectDataService.updateProject(project)
 
-        val addRes = dataDataService.addInformation(info.info)
-        if (addRes != null) {
-            return ResponseEntity(InfoAddCompleteResponse(addRes.blockIndex, addRes.offset), HttpStatus.OK)
-        } else {
-            return ResponseEntity(WrongResponse(10002, "fail to add"), HttpStatus.INTERNAL_SERVER_ERROR)
+        return try {
+            val addRes = dataDataService.addInformation(info.info, project.name)
+            if (addRes != null) {
+                ResponseEntity(InfoAddCompleteResponse(addRes.blockIndex, addRes.offset), HttpStatus.OK)
+            } else {
+                ResponseEntity(WrongResponse(10002, "fail to add"), HttpStatus.INTERNAL_SERVER_ERROR)
+            }
+        } catch (e: AllMasterDeadException) {
+            ResponseEntity(WrongResponse(10003, "All masters are dead."),HttpStatus.SERVICE_UNAVAILABLE)
         }
+
     }
 
     @ApiOperation(value = "查找信息", notes = "查找信息")
     @RequestMapping(value = ["/data"], method = [(RequestMethod.GET)])
     @ApiResponses(value = [
         (ApiResponse(code = 200, message = "Returns the data", response = DataGetResponse::class)),
-        (ApiResponse(code = 403, message = "Token not valid")),
-        (ApiResponse(code = 404, message = "Token valid, blockIndex or offset not valid"))
+        (ApiResponse(code = 401, message = "Token not valid.")),
+        (ApiResponse(code = 403, message = "Accessor is not the owner of the project od the data")),
+        (ApiResponse(code = 404, message = "Token valid, blockIndex or offset not valid")),
+        (ApiResponse(code = 503, message = "All masters are dead."))
     ])
     @ResponseBody
     fun getInformation(@RequestParam("blockIndex") blockIndex: Long,
                        @RequestParam("offset") offset: Int,
                        @RequestParam("token") token: String): ResponseEntity<Response>? {
-        projectDataService.findProjectByToken(token)
-                ?: return ResponseEntity(WrongResponse(403, "Token not valid"), HttpStatus.FORBIDDEN)
 
-        val res = dataDataService.findInformation(blockIndex, offset)
-                ?: return ResponseEntity(WrongResponse(404, "Not Found"), HttpStatus.NOT_FOUND)
-        return ResponseEntity(DataGetResponse(res.info), HttpStatus.OK)
+        val project = projectDataService.findProjectByToken(token)
+                ?: return ResponseEntity(WrongResponse(401, "Token not valid"), HttpStatus.UNAUTHORIZED)
+
+
+        try {
+            val res = dataDataService.findInformation(blockIndex, offset, project.name, project.isPrivate)
+                    ?: return ResponseEntity(WrongResponse(404, "Not Found"), HttpStatus.NOT_FOUND)
+            return ResponseEntity(DataGetResponse(res.info), HttpStatus.OK)
+        } catch (e: PrivateDataViolationException) {
+            return ResponseEntity(WrongResponse(403, "Accessor is not the owner of the project of the data"), HttpStatus.FORBIDDEN)
+        } catch (e: AllMasterDeadException) {
+            return ResponseEntity(WrongResponse(503, "All masters are dead."), HttpStatus.SERVICE_UNAVAILABLE)
+        }
+
     }
 }

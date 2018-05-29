@@ -2,6 +2,7 @@ package master.blservice;
 
 import master.exception.NoAvailableDatabaseException;
 import master.global.entity.Role;
+import master.global.entity.Table;
 import master.response.*;
 
 public interface MasterBlService {
@@ -40,12 +41,12 @@ public interface MasterBlService {
     FindBlockInfoResponse findBlockInfo(long blockIndex, int blockOffset) throws NoAvailableDatabaseException;
 
     /**
-     * save the info
+     * save the info and broadcast
      *
      * @param data
      * @return
      */
-    SaveInfoResponse saveInfo(String data);
+    SaveInfoResponse saveInfoAndBroadcast(String data);
 
     /**
      * is the database all updated
@@ -54,4 +55,27 @@ public interface MasterBlService {
      * @return
      */
     IsDatabaseUpdateResponse isDatabaseUpdate(int latestBlockIndex);
+
+    /**
+     * update self's buffer and table
+     *
+     * @param table
+     * @return
+     */
+    UpdateSelfResponse updateTable(Table table);
+
+    /**
+     * save the info
+     *
+     * @param info
+     * @return
+     */
+    SaveInfoResponse saveInfo(String info);
+
+    /**
+     * clear the master buffer
+     *
+     * @return
+     */
+    BufferClearResponse clearBuffer();
 }

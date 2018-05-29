@@ -14,9 +14,12 @@ class ProjectPo constructor() {
     lateinit var token: String
     @DatabaseField
     var infoAddedCount: Int = 0
+    @DatabaseField
+    var isPrivate: Boolean = false
 
-    constructor(name: String) : this() {
+    constructor(name: String, isPrivate: Boolean) : this() {
         this.name = name
+        this.isPrivate = isPrivate
         this.token = UUID.nameUUIDFromBytes(name.toByteArray()).toString()
     }
 

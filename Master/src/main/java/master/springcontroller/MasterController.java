@@ -80,15 +80,15 @@ public class MasterController {
         }
     }
 
-    @ApiOperation(value = "用户保存信息", notes = "用户保存信息，存入缓冲区")
+    @ApiOperation(value = "用户保存信息并广播", notes = "用户保存信息，存入缓冲区，并向所有主机广播")
     @RequestMapping(value = "/saveInfo", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Acknowledged", response = SaveInfoResponse.class),
             @ApiResponse(code = 403, message = "Not sender"),
     })
     @ResponseBody
-    public ResponseEntity<Response> saveInfo(@RequestBody SaveInfoParameters saveInfoParameters) {
-        return new ResponseEntity<>(masterBlService.saveInfo(saveInfoParameters.getInfo()), HttpStatus.OK);
+    public ResponseEntity<Response> saveInfoAndBroadcast(@RequestBody SaveInfoParameters saveInfoParameters) {
+        return new ResponseEntity<>(masterBlService.saveInfoAndBroadcast(saveInfoParameters.getInfo()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "数据机查看自己是否是最新版", notes = "数据机查看自己是否是最新版")
@@ -100,5 +100,38 @@ public class MasterController {
     @ResponseBody
     public ResponseEntity<Response> isDatabaseUpdate(@RequestBody IsDatabaseUpdateParameters isDatabaseUpdateParameters) {
         return new ResponseEntity<>(masterBlService.isDatabaseUpdate(isDatabaseUpdateParameters.getLatestBlockIndex()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "用户保存信息", notes = "用户保存信息，存入缓冲区")
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Acknowledged", response = SaveInfoResponse.class),
+            @ApiResponse(code = 403, message = "Not sender"),
+    })
+    @ResponseBody
+    public ResponseEntity<Response> saveInfo(@RequestBody SaveInfoParameters saveInfoParameters) {
+        return new ResponseEntity<>(masterBlService.saveInfo(saveInfoParameters.getInfo()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "主机更新表数据", notes = "主机更新自己的表数据")
+    @RequestMapping(value = "/updateTable", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Acknowledged", response = UpdateSelfResponse.class),
+            @ApiResponse(code = 403, message = "Not sender"),
+    })
+    @ResponseBody
+    public ResponseEntity<Response> updateTable(@RequestBody UpdateSelfParameters updateSelfParameters) {
+        return new ResponseEntity<>(masterBlService.updateTable(updateSelfParameters.getTable()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "主机清空缓存", notes = "主机清空自己的所有缓存")
+    @RequestMapping(value = "/clearBuffer", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Acknowledged", response = UpdateSelfResponse.class),
+            @ApiResponse(code = 403, message = "Not sender"),
+    })
+    @ResponseBody
+    public ResponseEntity<Response> clearBuffer() {
+        return new ResponseEntity<>(masterBlService.clearBuffer(), HttpStatus.OK);
     }
 }
