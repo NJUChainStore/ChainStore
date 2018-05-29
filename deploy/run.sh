@@ -27,6 +27,8 @@ tail -f master8002.txt | while read LOGLINE
 do
 [[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
 done
+PID=$(ps -ef | grep "Master-1.0-SNAPSHOT.jar" | grep -v grep | awk '{ print $2 }')
+echo $PID
 ./mining.sh start
 ./webservice.sh start
 ./database.sh start 8082
