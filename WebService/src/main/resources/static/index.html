@@ -3,82 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <title>ChainStore Web Management Platform</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="assets/css/main.css" />
 </head>
 <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<body>
-<h1>
-    欢迎来到ChainStore Web管理平台！
-</h1>
-<div id="app">
-    <div>
-        <h2>注册一个项目！</h2>
-        <p>请输入项目名</p>
-        <div class="col-lg-6">
-            <input type="text" class="form-control" placeholder="项目名" style="display:inline-block ;"
-                   v-model="projectName"/>
+<body class="landing">
+
+<div id="page-wrapper">
+
+    <!-- Header -->
+    <header id="header" class="alt">
+        <h4><a href="index.html">ChainStore</a>  | by Quadra H</h4>
+        <nav id="nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#" class="button">Sign Up</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Banner -->
+    <section id="banner">
+        <h2>ChainStore Web管理平台</h2>
+        <ul class="actions">
+            <li><a href="#" class="button special">Sign Up</a></li>
+            <li><a href="#" class="button">Learn More</a></li>
+        </ul>
+    </section>
+
+
+    <!-- Main -->
+    <section id="main" class="container">
+
+        <section class="box special">
+            <header class="major">
+                <h2>欢迎来到Chain Store web管理平台</h2>
+                <p>在这里，你可以注册新项目，查看已有项目<br />
+                    也可以增加信息，查找内容。</p>
+            </header>
+            <span class="image featured"><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1527615713258&di=708750cc13c6397db3993bb32e477fda&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fback_pic%2Fqk%2Fback_origin_pic%2F00%2F04%2F47%2Fceebdd36e1be3acdcfddf9e3f08b8b33.png" alt="" /></span>
+        </section>
+
+        <section class="box special features">
+            <div class="features-row">
+                <section>
+                    <span class="icon major fa-bolt accent2"></span>
+                    <h3>注册项目</h3>
+                </section>
+                <section>
+                    <span class="icon major fa-area-chart accent3"></span>
+                    <h3>现有项目</h3>
+                </section>
+            </div>
+            <div class="features-row">
+                <section>
+                    <span class="icon major fa-cloud accent4"></span>
+                    <h3>增加信息</h3>
+                </section>
+                <section>
+                    <span class="icon major fa-lock accent5"></span>
+                    <h3>查找内容</h3>
+                </section>
+            </div>
+        </section>
+
+        <section class="box special">
+            <header class="major">
+        <div id="app">
+            <div class="features-row">
+                <h2 id="register">注册一个项目！</h2>
+                <p>请输入项目名</p>
+                <br>
+                <br>
+                <br>
+
+                <div class="4u 12u(mobilep)">
+                    <input type="text" class="form-control" placeholder="项目名" style="display:inline-block ;margin-left: 100%"
+                           v-model="projectName"/>
+                    <br>
+                </div>
+            <br>
+            </div>
+
+            <div class="features-row">
+                <button type="button" class="btn btn-default" v-on:click="addProject">增加项目</button>
+            <br>
+            <br>
+            <br>
+                <p v-if="!!error" style="color: red">{{ error }}</p>
+                <p v-if="previouslyAdded" style="color: green">
+                    恭喜！您已经成功注册了 {{ previouslyAdded.name }} 项目。<br/>
+                    请通过携带如下token访问您的项目：{{ previouslyAdded.token }}<br/>
+                    切记请传输<strong>已经加密的经过base64编码的信息</strong>，<br/>
+                    否则可能有数据被盗用或者信息丢失的风险
+                </p>
+            </div>
+
+            <div class="features-row">
+            <div>
+                <br>
+                <h2>现有项目</h2>
+                <br>
+                <button type="button" class="btn btn-default" v-on:click="refreshAllProjects">刷新项目列表</button>
+                <br>
+                <br>
+                <br>
+                <ol>
+                    <li v-for="item in list">
+                        {{ item }}
+                    </li>
+                </ol>
+            </div>
+            </div>
+
+            <div class="features-row">
+            <div>
+                <br>
+                <h2>增加信息</h2>
+                <p>请输入信息内容</p>
+                <br>
+                <br>
+                <br>
+                <div class="4u 12u(mobilep)">
+                    <input type="text" class="form-control" placeholder="信息内容" style="display:inline-block ;margin-left: 100%"
+                           v-model="addInformationSection.input"/>
+                </div>
+                </p>
+                <p>输入token</p>
+                <br>
+                <br>
+                <br>
+                <div class="4u 12u(mobilep)">
+                    <input type="text" class="form-control" placeholder="token" style="display:inline-block ;margin-left: 100%"
+                           v-model="addInformationSection.token"/>
+                </div>
+                </p>
+                <button type="button" class="btn btn-default" v-on:click="addInformation">增加信息</button>
+                <br>
+                <br>
+                <br>
+                <p v-if="addInformationSection.result.error" style="color: red">{{ addInformationSection.result.error }}</p>
+                <p v-if="addInformationSection.result.info">
+                    内容已经加入链。{{ addInformationSection.result.info }}
+                </p>
+            </div>
+            </div>
+
+            <div class="features-row">
+            <div>
+                <h2>查找内容</h2>
+                <p>区块编号</p>
+                <br/>
+                <p>
+                <div class="4u 12u(mobilep)">
+                    <input type="text" class="form-control" placeholder="token" style="display:inline-block ;margin-left: 100%"
+                           v-model="searchSection.blockIndex" type="number" title="区块编号"/>
+                </div>
+                </p>
+
+                <p>偏移</p>
+                <br/>
+                <p>
+                <div class="4u 12u(mobilep)">
+                    <input type="text" class="form-control" placeholder="token" style="display:inline-block ;margin-left: 100%"
+                           v-model="searchSection.offset" type="number" title="偏移"/>
+                </div>
+                </p>
+                <p>token</p>
+                <br/>
+                <p>
+                <div class="4u 12u(mobilep)">
+                    <input type="text" class="form-control" placeholder="token" style="display:inline-block ;margin-left: 100%"
+                           v-model="searchSection.token" title="token"/>
+                </div>
+                </p>
+                <button type="button" class="btn btn-default" v-on:click="search">搜索</button>
+                <br>
+                <br>
+                <br>
+                <p v-if="searchSection.result.error" style="color: red">{{ searchSection.result.error }}</p>
+                <p v-if="searchSection.result.info !== null">
+                    内容：{{ searchSection.result.info }}
+                </p>
+            </div>
+            </div>
         </div>
-        <button type="button" class="btn btn-default" v-on:click="addProject">增加项目</button>
-        <p v-if="!!error" style="color: red">{{ error }}</p>
-        <p v-if="previouslyAdded" style="color: green">
-            恭喜！您已经成功注册了 {{ previouslyAdded.name }} 项目。<br/>
-            请通过携带如下token访问您的项目：{{ previouslyAdded.token }}<br/>
-            切记请传输<strong>已经加密的经过base64编码的信息</strong>，<br/>
-            否则可能有数据被盗用或者信息丢失的风险
-        </p>
-    </div>
-    <div>
-        <h2>现有项目</h2>
-        <button type="button" class="btn btn-default" v-on:click="refreshAllProjects">刷新项目列表</button>
-        <ol>
-            <li v-for="item in list">
-                {{ item }}
-            </li>
-        </ol>
-    </div>
-    <div>
-        <h2>增加信息</h2>
-        <p>请输入信息内容</p>
-        <div class="col-lg-6">
-            <input type="text" class="form-control" placeholder="信息内容" style="display:inline-block ;"
-                   v-model="addInformationSection.input"/>
-        </div>
-        <p>输入token</p>
-        <div class="col-lg-6">
-            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
-                   v-model="addInformationSection.token"/>
-        </div>
-        <button type="button" class="btn btn-default" v-on:click="addInformation">增加信息</button>
-        <p v-if="addInformationSection.result.error" style="color: red">{{ addInformationSection.result.error }}</p>
-        <p v-if="addInformationSection.result.info">
-            内容已经加入链。{{ addInformationSection.result.info }}
-        </p>
-    </div>
-    <div>
-        <h2>查找内容</h2>
-        <p>区块编号</p>
-        <div class="col-lg-6">
-            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
-                   v-model="searchSection.blockIndex" type="number" title="区块编号"/>
-        </div>
-        <p>偏移</p>
-        <div class="col-lg-6">
-            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
-                   v-model="searchSection.offset" type="number" title="偏移"/>
-        </div>
-        <p>token</p>
-        <div class="col-lg-6">
-            <input type="text" class="form-control" placeholder="token" style="display:inline-block ;"
-                   v-model="searchSection.token" title="token"/>
-        </div>
-        <button type="button" class="btn btn-default" v-on:click="search">搜索</button>
-        <p v-if="searchSection.result.error" style="color: red">{{ searchSection.result.error }}</p>
-        <p v-if="searchSection.result.info !== null">
-            内容：{{ searchSection.result.info }}
-        </p>
-    </div>
+            </header>
+        </section>
+
+    </section>
+
+    <!-- CTA -->
+    <section id="cta">
+
+        <form>
+            <div class="row uniform 50%">
+                <div class="8u 12u(mobilep)">
+                    <input type="email" name="email" id="email" placeholder="Email Address" />
+                </div>
+                <div class="4u 12u(mobilep)">
+                    <input type="submit" value="Sign Up" class="fit" />
+                </div>
+            </div>
+        </form>
+    </section>
+
+</div>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <ul class="icons">
+            <li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+            <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+            <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+            <li><a href="#" class="icon fa-github"><span class="label">Github</span></a></li>
+            <li><a href="#" class="icon fa-dribbble"><span class="label">Dribbble</span></a></li>
+            <li><a href="#" class="icon fa-google-plus"><span class="label">Google+</span></a></li>
+        </ul>
+        <ul class="copyright">
+            <li>&copy; ChainStore. All rights reserved.</li>
+        </ul>
+    </footer>
 </div>
 <script>
     var app = new Vue({
@@ -198,5 +347,17 @@
         }
     });
 </script>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/jquery.scrollgress.min.js"></script>
+<script src="assets/js/skel.min.js"></script>
+<script src="assets/js/util.js"></script>
+<!--[if lte IE 8]>
+<script src="assets/js/ie/respond.min.js"></script><![endif]-->
+<script src="assets/js/main.js"></script>
+
+
 </body>
 </html>
