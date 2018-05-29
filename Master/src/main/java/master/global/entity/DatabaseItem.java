@@ -10,6 +10,9 @@ public class DatabaseItem {
     private Date lastValidateTime;
     private String ip;
 
+    public DatabaseItem() {
+    }
+
     public DatabaseItem(long registerTimestamp, String masterToken, String accessToken, DatabaseState state, Date lastValidateTime, String ip) {
         this.registerTimestamp = registerTimestamp;
         this.masterToken = masterToken;

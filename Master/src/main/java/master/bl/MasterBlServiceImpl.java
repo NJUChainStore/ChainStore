@@ -124,7 +124,6 @@ public class MasterBlServiceImpl implements MasterBlService {
         long blockOffset = BufferManager.buffer.getNowOffset();
         BufferManager.buffer.add(data);
         if (BufferManager.buffer.isFull()) {
-            saveBlockToDatabase();
             for (String url : Table.masters) {
                 if (!url.equals(TableManager.localUrl)) {
                     System.out.println("*******************************");
@@ -139,6 +138,7 @@ public class MasterBlServiceImpl implements MasterBlService {
                     }
                 }
             }
+            saveBlockToDatabase();
         } else {
             for (String url : Table.masters) {
                 if (!url.equals(TableManager.localUrl)) {

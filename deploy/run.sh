@@ -12,32 +12,32 @@ tail -f -n 1 master8002.txt | echo | grep -qe "Started Master"
 ./mining.sh run
 ./webservice.sh run
 else if [ "$1" == "start" ]; then
-./master.sh start 8000
-tail -f master8000.txt | while read LOGLINE
-do
-[[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
-done
-./master.sh start 8001
-tail -f master8001.txt | while read LOGLINE
-do
-[[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
-done
-./master.sh start 8002
-tail -f master8002.txt | while read LOGLINE
-do
-[[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
-done
-PID=$(ps -ef | grep "Master-1.0-SNAPSHOT.jar" | grep -v grep | awk '{ print $2 }')
-echo $PID
-./mining.sh start
-./webservice.sh start
+#./master.sh start 8000
+#tail -f master8000.txt | while read LOGLINE
+#do
+#[[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
+#done
+#./master.sh start 8001
+#tail -f master8001.txt | while read LOGLINE
+#do
+#[[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
+#done
+#./master.sh start 8002
+#tail -f master8002.txt | while read LOGLINE
+#do
+#[[ "${LOGLINE}" == *"Started Master"* ]] && pkill -P $$ tail
+#done
+#PID=$(ps -ef | grep "Master-1.0-SNAPSHOT.jar" | grep -v grep | awk '{ print $2 }')
+#echo $PID
+#./mining.sh start
+#./webservice.sh start
 ./database.sh start 8082
 ./database.sh start 8083
 ./database.sh start 8084
 else if [ "$1" == "stop" ]; then
 ./master.sh stop
 ./mining.sh stop
-./webservice.sh stop
+#./webservice.sh stop
 if [ -z "$PID" ]; then
 echo Application is already stopped
 else
