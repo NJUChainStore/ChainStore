@@ -3,6 +3,7 @@ package webservice.data.data
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestTemplate
 import webservice.dataservice.DataDataService
 import webservice.exception.AllMasterDeadException
@@ -32,13 +33,11 @@ class DataDataServiceImpl : DataDataService {
     override fun findInformation(blockIndex: Long, offset: Int, accessor: String, isPrivate: Boolean): DataQueryVo {
         val info = ToMasterQueryInformationVo(blockIndex, offset)
 
-        var url = map.selectAValid()
-
-        while (url != null) {
+        for (url in map.select()) {
+            println(url)
             try {
                 val res = restTemplate
                         .getForEntity("$url/findBlockInfo?blockIndex=$blockIndex&blockOffset=$offset", ToMasterQueryInformationResponse::class.java)
-
 
                 val resData = res.body.data
                 val i = resData.lastIndexOf(SEPARATOR)
@@ -55,8 +54,7 @@ class DataDataServiceImpl : DataDataService {
             } catch (e: PrivateDataViolationException) {
                 throw e
             } catch (e: Exception) {
-                map.invalidate(url)
-                url = map.selectAValid()
+                println(e)
             }
         }
 
@@ -69,16 +67,15 @@ class DataDataServiceImpl : DataDataService {
 
         val info = ToMasterAddInformationVo(info + SEPARATOR + projectName)
 
-        var url = map.selectAValid()
-        while (url != null) {
+        for (url in map.select()) {
             try {
                 val res = restTemplate
                         .postForEntity("$url/saveInfo", info, ToMasterAddInformationResponse::class.java)
                 val resData = res.body ?: return null
                 return InformationAddResponseVo(resData.blockIndex, resData.blockOffset.toInt())
+
             } catch (e: Exception) {
-                map.invalidate(url)
-                url = map.selectAValid()
+                println(e)
             }
 
         }

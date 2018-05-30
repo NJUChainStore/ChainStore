@@ -4,32 +4,26 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import webservice.config.MasterAddressesConfig
 import javax.annotation.PostConstruct
+import kotlin.coroutines.experimental.buildSequence
 
 @Component
-class MasterMap {
+class MasterMap constructor(@Autowired var masterAddressesConfig: MasterAddressesConfig){
 
-    @Autowired lateinit var masterAddressesConfig: MasterAddressesConfig
-    private val map: HashMap<String, Boolean> = HashMap()
+    private val masters: List<String>
 
-    @PostConstruct
-    fun postConstruct() {
-        println(masterAddressesConfig.masters)
-        masterAddressesConfig.masters.forEach { x -> map[x] = true }
+    init {
+        masters = ArrayList(masterAddressesConfig.masters)
     }
 
-    fun invalidate(address: String) {
-        if (map.contains(address)) {
-            map[address] = false
-        }
-    }
+    private var current = 0
 
-    fun selectAValid(): String? {
-        for (i in map) {
-            if (i.value) {
-                return i.key
-            }
+    fun select() = buildSequence {
+        var count = 0
+        while (count < masters.size) {
+            yield(masters[current])
+            current = (current+1)%(masters.size)
+            count++
         }
-        return null
     }
 
 
