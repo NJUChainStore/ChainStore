@@ -43,7 +43,7 @@ class DataDataServiceImpl : DataDataService {
                 val i = resData.lastIndexOf(SEPARATOR)
 
                 val data = resData.substring(0, i)
-                val owner = resData.substring(i)
+                val owner = resData.substring(i+SEPARATOR.length)
 
 
                 if (isPrivate && owner != accessor) {
