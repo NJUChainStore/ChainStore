@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,13 +58,22 @@ public class MasterRequestBlServiceImpl implements MasterRequestBlService {
         String senderToken = "";
         int senderIndex = 0;
         List<DatabaseItem> databaseItems = TableManager.table.getDatabases();
+
+        ArrayList<Integer> indexArr=new ArrayList<Integer>();
         for (int i = 0; i < databaseItems.size(); i++) {
             if (databaseItems.get(i).getState() == DatabaseState.Available) {
-                senderAddress = databaseItems.get(i).getIp();
-                senderToken = databaseItems.get(i).getAccessToken();
-                senderIndex = i;
+                //senderAddress = databaseItems.get(i).getIp();
+                //senderToken = databaseItems.get(i).getAccessToken();
+                //senderIndex = i;
+                indexArr.add(i);
             }
         }
+
+        int tempI=(int)(Math.random()*indexArr.size());
+        //if(tempI==indexArr.size()&&tempI>0){tempI--;}
+        senderAddress = databaseItems.get(indexArr.get(tempI)).getIp();
+        senderToken = databaseItems.get(indexArr.get(tempI)).getAccessToken();
+        senderIndex = indexArr.get(tempI);
 
         askToReceive(databaseItem, senderToken);
         DatabaseItem temp1 = databaseItems.get(index);

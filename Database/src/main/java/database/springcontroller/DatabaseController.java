@@ -169,7 +169,11 @@ public class DatabaseController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("authentication", globalData.getAccessToken());
         // HttpEntity<IsDatabaseUpdateParameters> entity = new HttpEntity<>(new IsDatabaseUpdateParameters(globalData.getLatestBlockIndex()), headers);
-        ArrayList<Block> blocks = blockDao.readBlocks(sendStartInfo.getStartIndex(), globalData.getLatestBlockIndex());
+        ArrayList<Block> blocks=new ArrayList<Block>();
+        if(blockDao.check(globalData.getLatestBlockIndex())<0){
+            blocks = blockDao.readBlocks(sendStartInfo.getStartIndex(), globalData.getLatestBlockIndex());
+        }
+
         // blockDao.
         String url = sendStartInfo.getReceiverAddress() + "/receiveIt";
 
