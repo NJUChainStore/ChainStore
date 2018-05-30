@@ -77,3 +77,8 @@ deploy/**/*.txt
 deploy/*.jar
 
 database.db
+
+**/.classpath
+**/.project
+**/bin
+**/.settings
